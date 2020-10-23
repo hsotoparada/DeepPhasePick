@@ -1,8 +1,6 @@
 #module util_dpp, for python 3.x
 #coding=utf-8
 
-import pyasdf
-import obspy.core.event as oc_ev
 import obspy.core as oc
 import numpy as np
 from glob import glob
@@ -11,76 +9,146 @@ from obspy.io.mseed.core import InternalMSEEDError
 import matplotlib as mpl
 import matplotlib.ticker as ticker
 import pylab as plt
-from datetime import datetime, timedelta
-import calendar
-from keras.models import load_model, model_from_json
+from datetime import datetime
+from keras.models import load_model
 from keras import optimizers, utils
 import keras
 import tensorflow as tf
 from hyperas.utils import eval_hyperopt_space
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
-from sklearn.metrics import confusion_matrix
-from sklearn.utils.multiclass import unique_labels
-from datetime import datetime
-import itertools
 import tqdm
 from operator import itemgetter
-import re,sys,os,subprocess,shutil,gc
+import re, sys, os, shutil, gc
 import pickle
 
 
 ##  FUNCTIONS  ##
 
-def export_dict2pckl(dct,out_path):
-  """
-  export dictionary to save it as pickle file.
-  dct = dictionary
-  out_path = path to created pickle file.
-  """
-  with open(out_path, 'wb') as pout:
-    pickle.dump(dct, pout)
-    #
-    #   pout = open(out_path, 'w')
-    #   pickle.dump(dct, pout)
-    #   pout.close()
+def export_dict2pckl(dct, opath):
+    """
+    export dictionary as pickle file.
+    dct = dictionary
+    opath = output path to created pickle file.
+    """
+    with open(out_path, 'wb') as pout:
+        pickle.dump(dct, pout)
 
 
-def import_pckl2dict(in_path):
-  """
-  import pickle file to dictionary. Return this dictionary.
-  in_path = path to pickle file.
-  """
-  with open(in_path, 'rb') as pin:
-    dct = pickle.load(pin)
-    #
-    #   pin = open(in_path, 'r')
-    #   dct = pickle.load(pin)
-    #   pin.close()
-  return dct
+def import_pckl2dict(ipath):
+    """
+    import pickle file to dictionary. It returns this dictionary.
+    ipath = path to pickle file.
+    """
+    with open(ipath, 'rb') as pin:
+        dct = pickle.load(pin)
+    return dct
 
 
-# function to set up tensorflow v2.x / keras session
 def init_session():
-	#
-	# this is to avoid error:
-	# Failed to get convolution algorithm. This is probably because cuDNN failed to initialize...
-	config = tf.compat.v1.ConfigProto()
+    """
+    sets up tensorflow v2.x / keras session
+    """
+    #
+    # This is to avoid error:
+    # Failed to get convolution algorithm. This is probably because cuDNN failed to initialize...
+    config = tf.compat.v1.ConfigProto()
     # config = tf.ConfigProto()
-	config.gpu_options.allow_growth = True  # It allows any new GPU process which consumes a GPU memory to be run on the same machine. source: https://kobkrit.com/using-allow-growth-memory-option-in-tensorflow-and-keras-dc8c8081bc96
-	config.gpu_options.per_process_gpu_memory_fraction = 0.8
-	# tf.keras.backend.set_session(tf.Session(config=config))
-	session = tf.compat.v1.Session(config=config)
-	# session = tf.Session(config=config)
-	#
-	# remove previously generated files or directories
-	dirs_remove = ['__pycache__/', '~/.nv/']
-	for dir_remove in dirs_remove:
-		try:
-			shutil.rmtree(dir_remove)
-			print(f"{dir_remove} removed")
-		except FileNotFoundError:
-			print(f"{dir_remove} not found, continuing...")
-			pass
+    #
+    # It allows any new GPU process which consumes a GPU memory to be run on the same machine.
+    # see: https://kobkrit.com/using-allow-growth-memory-option-in-tensorflow-and-keras-dc8c8081bc96
+    config.gpu_options.allow_growth = True
+    config.gpu_options.per_process_gpu_memory_fraction = 0.8
+    # tf.keras.backend.set_session(tf.Session(config=config))
+    session = tf.compat.v1.Session(config=config)
+    # session = tf.Session(config=config)
+    #
+    # remove previously generated files or directories
+    dirs_remove = ['__pycache__/', '~/.nv/']
+    for dir_remove in dirs_remove:
+        try:
+            shutil.rmtree(dir_remove)
+            print(f"{dir_remove} removed")
+        except FileNotFoundError:
+            print(f"{dir_remove} not found, continuing...")
+            pass
+
+
+def get_model_detection(ipath, ntrials, verbose=True):
+    """
+    retrieves dictionary with best model and other relevant results obtained from
+    hyperparameter optimization performed for phase detection task
+    """
+    #
+    space = get_space_det()
+    trials = import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{ntrials:03}.pckl")
+    arg_best_trial = get_arg_best_trial(trials)
+    best_trial = trials.trials[arg_best_trial]
+    best_model = load_model(f"{ipath}/model_hyperopt_t{arg_best_trial:03}.h5")
+    best_params = eval_hyperopt_space(space, best_trial['misc']['vals'])
+    best_results = import_pckl2dict(f"{ipath}/dict_hyperopt_t{arg_best_trial:003}.pckl")
+    best_hist = best_results['history']
+    #
+    if verbose:
+        print("#")
+        print(best_model.summary())
+        #
+        print("######")
+        print(f"best model for phase detection found for trial {arg_best_trial:03}/{ntrials:003} and hyperparameters:")
+        for k in best_params.keys():
+            print(k, best_params[k])
+        print("#")
+        print(f"best loss for phase detection:")
+        print(np.array(best_hist['val_acc']).max())
+    #
+    dct = {
+        'best_model': best_model,
+        'best_params': best_params,
+        'best_results': best_results,
+        'best_hist': best_hist,
+    }
+    #
+    return dct
+
+
+def get_model_picking(ipath, mode, ntrials, verbose=True):
+    """
+    retrieves dictionary with best model and other relevant results obtained from
+    hyperparameter optimization performed for phase picking task
+    """
+    #
+    if mode == 'P':
+        space = get_space_pick_P()
+    else:
+        space = get_space_pick_S()
+    #
+    trials = import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{ntrials:03}.pckl")
+    arg_best_trial = get_arg_best_trial(trials)
+    best_trial = trials.trials[arg_best_trial]
+    best_model = load_model(f"{ipath}/model_hyperopt_t{arg_best_trial:03}.h5")
+    best_params = eval_hyperopt_space(space, best_trial['misc']['vals'])
+    best_results = import_pckl2dict(f"{ipath}/dict_hyperopt_t{arg_best_trial:03}.pckl")
+    best_hist = best_results['history']
+    #
+    if verbose:
+        print("#")
+        print(best_model.summary())
+        #
+        print("######")
+        print(f"best model for {mode} phase picking found for trial {arg_best_trial:03}/{ntrials:03} and hyperparameters:")
+        for k in best_params.keys():
+            print(k, best_params[k])
+        print("#")
+        print(f"best val acc for {mode} phase picking:")
+        print(np.array(best_hist['val_acc']).max())
+    #
+    dct = {
+        'best_model': best_model,
+        'best_params': best_params,
+        'best_results': best_results,
+        'best_hist': best_hist,
+    }
+    #
+    return dct
 
 
 #TODO: add reference to source code (Ross et al., 2018)
@@ -156,18 +224,21 @@ def sliding_window(data, size, stepsize=1, padded=False, axis=-1, copy=True):
         return strided
 
 
-# function to retrieve index of best trial
 def get_arg_best_trial(trials):
-    # valid_trial_list = [trial for trial in trials_loc if STATUS_OK == trial['result']['status']] #TODO: check if this can produces inconsistency between dimensions of original trials and valid_trial_list
-    # losses = [float(trial['result']['loss']) for trial in valid_trial_list]
+    """
+    retrieves index of best trial (trial at which loss in minimum).
+    """
     losses = [float(trial['result']['loss']) for trial in trials]
     arg_min_loss = np.argmin(losses)
     return arg_min_loss
 
 
 def get_space_det():
-	#
-	space = {
+    """
+    returns hyperopt search space used in hyperparameter optimization of model trained for the phase detection task
+    """
+    #
+    space = {
 		#
 		# convolutional layers
 		#
@@ -232,7 +303,6 @@ def get_space_det():
 		#
 		'dense_units_1': hp.choice('dense_units_1', np.arange(25, 301, 25)),
 		'dense_activ_1': hp.choice('dense_activ_1', ['relu', 'sigmoid']),
-		# 'dense_drop_1': hp.uniform('dense_drop_1', 0, 1),
 		'dense_drop_1': hp.choice('dense_drop_1', np.arange(.2, .51, .05)),
 		'dense_nlay': hp.choice('dense_nlay', [
 			{'layers': 'one'},
@@ -281,14 +351,17 @@ def get_space_det():
         # pre_mode = 2: no normalization + band-pass filter (2-10 Hz)
         # pre_mode = 3: no normalization + high-pass filter (freq_min = 0.2 Hz = 5 s)
 		'pre_mode': hp.choice('pre_mode', [1, 2, 3]),
-	}
-	#
-	return space
+    }
+    #
+    return space
 
 
 def get_space_pick_P():
-	#
-	space = {
+    """
+    returns hyperopt search space used in hyperparameter optimization of model trained for the P-phase picking task
+    """
+    #
+    space = {
 		#
 		# recurrent layers
 		#
@@ -302,11 +375,6 @@ def get_space_pick_P():
              'rec_drop_2_1': hp.choice('rec_drop_2_1', np.arange(.2, .51, .05)),
              'rec_drop_2_2': hp.choice('rec_drop_2_2', np.arange(.2, .51, .05)),
 			 },
-			# {'layers': 'three',
-            #  'rec_units_3': hp.choice('rec_units_3', np.arange(10, 210, 10)),
-            #  'rec_drop_3_1': hp.choice('rec_drop_3_1', np.arange(.2, .51, .05)),
-            #  'rec_drop_3_2': hp.choice('rec_drop_3_2', np.arange(.2, .51, .05)),
-			#  },
 		]),
 		#
 		# general
@@ -314,14 +382,17 @@ def get_space_pick_P():
 		# 'opt': hp.choice('opt', ['adam', 'sgd', 'rmsprop']),
 		'opt_lr': hp.choice('opt_lr', [1e-05, 1e-04, 1e-03, 1e-02, 1e-01]),
 		'batch_size': hp.choice('batch_size', np.arange(50, 210, 10)),
-	}
-	#
-	return space
+    }
+    #
+    return space
 
 
 def get_space_pick_S():
-	#
-	space = {
+    """
+    returns hyperopt search space used in hyperparameter optimization of model trained for the S-phase picking task
+    """
+    #
+    space = {
 		#
 		# recurrent layers
 		#
@@ -335,11 +406,6 @@ def get_space_pick_S():
              'rec_drop_2_1': hp.choice('rec_drop_2_1', np.arange(.2, .51, .05)),
              'rec_drop_2_2': hp.choice('rec_drop_2_2', np.arange(.2, .51, .05)),
 			 },
-			# {'layers': 'three',
-            #  'rec_units_3': hp.choice('rec_units_3', np.arange(10, 210, 10)),
-            #  'rec_drop_3_1': hp.choice('rec_drop_3_1', np.arange(.2, .51, .05)),
-            #  'rec_drop_3_2': hp.choice('rec_drop_3_2', np.arange(.2, .51, .05)),
-			#  },
 		]),
 		#
 		# general
@@ -347,9 +413,9 @@ def get_space_pick_S():
 		# 'opt': hp.choice('opt', ['adam', 'sgd', 'rmsprop']),
 		'opt_lr': hp.choice('opt_lr', [1e-05, 1e-04, 1e-03, 1e-02, 1e-01]),
 		'batch_size': hp.choice('batch_size', np.arange(50, 210, 10)),
-	}
-	#
-	return space
+    }
+    #
+    return space
 
 
 def make_prediction(model, st, dt, dct_trigger, dct_param):
