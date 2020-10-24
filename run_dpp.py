@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
-import util_dpp as dpp
+import dpp
 import obspy.core as oc
 import numpy as np
-from datetime import datetime
-from keras.models import load_model
-from hyperas.utils import eval_hyperopt_space
 from datetime import datetime
 import os, sys, gc
 
@@ -61,15 +58,12 @@ best_params_pick = {
 }
 #
 #
-###### global parameters for predicted windows ######
+###### global parameters for detection and picking of phases ######
 #
 # TODO:
 # -> explain these parameters
 # -> adapt their names to ones used in paper
 #
-phase_names = {
-    0: "P", 1: "S", 2: "N"
-}
 dct_param = {
     'st_detrend': True, 'st_filter': False,
     'filter': 'highpass', 'freq_min': .2, 'freq_max': 50.,
@@ -119,9 +113,14 @@ for k in dct_trigger.keys():
     print(k, dct_trigger[k])
 #
 #
-###### run prediction on waveform data ######
+###### parameters defining continuous waveform data on which DeepPhasePick is applied ######
 #
 # TODO: explain parameters in dicts
+#
+# dct_sta -> dictionary defining the archived waveform data.
+# stas: list of stations
+# ch: waveform channel code
+# net: network code
 #
 dct_sta = {
     #
@@ -144,6 +143,10 @@ dct_sta = {
     },
 }
 #
+# dct_fmt ->  dictionary defining some formatting for plotting prediction
+# results (see functions util_dpp.plot_predicted_wf*).
+# ylim1: y-axis limits of plotted seismic trace.
+#
 dct_fmt = {
     #
     'tocopilla': {
@@ -165,11 +168,15 @@ dct_fmt = {
     },
 }
 #
+# dct_time -> dictionary defining the time over which prediction is made.
+# dt_iter: time step between consecutive subwindows
+# tstarts: list of starting times of each time window
+# tends: list of ending times of each time window
+#
 dct_time = {
     #
     'tocopilla': {
         'dt_iter': 3600. * 1,
-        'dt_win': 3600. * 1,
         'tstarts': [
             oc.UTCDateTime(2007, 11, 20, 7, 0, 0)
             ],
@@ -180,7 +187,6 @@ dct_time = {
     #
     'iquique': {
         'dt_iter': 3600. * 1,
-        'dt_win': 3600. * 1,
         'tstarts': [
             # oc.UTCDateTime(2014, 4, 3, 2, 0, 0)
             oc.UTCDateTime(2014, 4, 3, 2, 8, 0)
@@ -193,7 +199,6 @@ dct_time = {
     #
     'albania': {
         'dt_iter': 3600. * 1,
-        'dt_win': 3600. * 1,
         'tstarts': [
             oc.UTCDateTime(2020, 1, 11, 21, 0, 0)
             ],
@@ -202,6 +207,9 @@ dct_time = {
             ],
     },
 }
+#
+#
+###### run DeepPhasePick on continuous waveform data ######
 #
 # flag_data = "tocopilla"
 flag_data = "iquique"
@@ -212,12 +220,13 @@ opath = "out"
 # for i in range(len(tstarts)):
 for i in range(len(dct_time[flag_data]['tstarts'])):
     #
-    # perform phase detection: predicting preliminary phase picks
-    ts = [dct_time[flag_data]['tstarts'][i], dct_time[flag_data]['tends'][i], dct_time[flag_data]['dt_iter'], dct_time[flag_data]['dt_win']]
+    # define time window on continuos seismic waveforms on which prediction is performed
+    ts = [dct_time[flag_data]['tstarts'][i], dct_time[flag_data]['tends'][i], dct_time[flag_data]['dt_iter']]
     #
+    # perform phase detection: predicting preliminary phase picks
     dct_st = dpp.run_prediction(best_model_det, best_params_det, ts, dct_sta[flag_data], dct_param, dct_trigger, opath, flag_data)
     #
-    # perform phase picking: predicting refined phase picks, and optionally plotting them and saving some relevant statistics
+    # perform phase picking: predicting refined phase picks, and optionally plotting them / saving some relevant statistics
     pick_asoc = dpp.get_pick_asoc(best_params_det, best_model_pick, best_params_pick, dct_st, dct_param, dct_trigger, flag_data, save_plot=True, save_stat=True)
     #
     # plot continuous waveform including predicted P, S phases, and corresponding predicted probability time series
