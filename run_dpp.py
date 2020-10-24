@@ -58,11 +58,14 @@ best_params_pick = {
 }
 #
 #
-###### global parameters for detection and picking of phases ######
+###### parameters used for detection and picking of phases ######
 #
 # TODO:
 # -> explain these parameters
 # -> adapt their names to ones used in paper
+#
+# dct_param -> dictionary defining how waveform data is to be preprocessed.
+# ...: ...
 #
 dct_param = {
     'st_detrend': True, 'st_filter': False,
@@ -71,6 +74,10 @@ dct_param = {
     'start_off': 5., 'stop_off': 0., 'dt_search': 90.,
     'st_normalized': True,
 }
+#
+# dct_trigger -> dictionary defining how predicted probabity time series are
+# used to obtain preliminary and refined phase onsets.
+# ...: ...
 #
 dct_trigger = {
     'only_dt': 0.01, 'n_shift': 10, 'pthres_p': [0.98, .001], 'pthres_s': [0.98, .001], 'max_trig_len': [9e99, 9e99],
