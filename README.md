@@ -29,8 +29,8 @@ Best performing trained models and other relevant results obtained from the hype
 
 ### 4. DeepPhasePick Worflow
 
-DeepPhasePick worflow is controlled by several dictionaries defined in the run\_dpp.py script.
-Using the parameters defined in these dictionaries, the script call the functions sotred in dpp.py following the steps described below...
+DeepPhasePick worflow is controlled by the parameters defined in several dictionaries in the run\_dpp.py script.
+Using these parameters, dpp.py runs the steps described below...
 
 1) Reading trained models and other relevant results from hyperparameter
 optimization.
