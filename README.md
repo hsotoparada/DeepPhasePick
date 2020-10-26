@@ -14,7 +14,7 @@ This archive can be updated with new data...
 
 ### 3. Optimized trained Models
 
-Best performing trained models and other relevant results obtained from the hyperparameter optimization are stored in the following directories: 
+Best performing trained models and other relevant results obtained from the hyperparameter optimization are stored in the following directories:
 
 **detection** -> phase detection related results,
 
@@ -36,7 +36,8 @@ optimization.
 Please let us know of any bugs found in the code.
 
 
-### Cite:
+### Citation:
+
 If you use this algorithm for research purpose, please cite it as follows:
 
 - Soto, H., & Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly

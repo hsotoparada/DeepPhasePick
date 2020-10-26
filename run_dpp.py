@@ -68,11 +68,9 @@ best_params_pick = {
 # ...: ...
 #
 dct_param = {
-    'st_detrend': True, 'st_filter': False,
+    'st_detrend': True, 'st_filter': False, 'st_normalized': True,
     'filter': 'highpass', 'freq_min': .2, 'freq_max': 50.,
     'st_resample': True, 'freq_resample': 100.,
-    'start_off': 5., 'stop_off': 0., 'dt_search': 90.,
-    'st_normalized': True,
 }
 #
 # dct_trigger -> dictionary defining how predicted probabity time series are
@@ -237,8 +235,14 @@ for i in range(len(dct_time[flag_data]['tstarts'])):
     pick_asoc = dpp.get_pick_asoc(best_params_det, best_model_pick, best_params_pick, dct_st, dct_param, dct_trigger, flag_data, save_plot=True, save_stat=True)
     #
     # plot continuous waveform including predicted P, S phases, and corresponding predicted probability time series
-    dpp.plot_predicted_wf_phases(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, opath, flag_data, dct_fmt[flag_data])
-    dpp.plot_predicted_wf_phases_prob(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, opath, flag_data, dct_fmt[flag_data])
+    dpp.plot_predicted_wf_phases(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="E")
+    dpp.plot_predicted_wf_phases(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="N")
+    dpp.plot_predicted_wf_phases(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="Z")
+    dpp.plot_predicted_wf_phases_prob(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="E")
+    dpp.plot_predicted_wf_phases_prob(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="N")
+    dpp.plot_predicted_wf_phases_prob(best_params_det, best_model_pick, best_params_pick, ts, dct_st, dct_param, dct_trigger, pick_asoc, flag_data, dct_fmt[flag_data], comp="Z")
+    #
+    dpp.plotly_predicted_wf_phases(best_params_det, best_model_pick, best_params_pick, dct_st, dct_param, dct_trigger, pick_asoc, flag_data)
     #
     del dct_st, pick_asoc
     gc.collect()
