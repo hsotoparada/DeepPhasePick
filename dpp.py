@@ -12,10 +12,10 @@ import pylab as plt
 from datetime import datetime
 from keras.models import load_model
 from keras import optimizers, utils
-import keras
+# import keras
 import tensorflow as tf
 from hyperas.utils import eval_hyperopt_space
-from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
+# from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 import tqdm
 from operator import itemgetter
 import re, sys, os, shutil, gc
@@ -79,7 +79,7 @@ def get_model_detection(ipath, ntrials, verbose=True):
     hyperparameter optimization performed for phase detection task
     """
     #
-    space = get_space_det()
+    space = import_pckl2dict(f"{ipath}/space_detection.pckl")
     trials = import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{ntrials:03}.pckl")
     arg_best_trial = get_arg_best_trial(trials)
     best_trial = trials.trials[arg_best_trial]
@@ -117,9 +117,9 @@ def get_model_picking(ipath, mode, ntrials, verbose=True):
     """
     #
     if mode == 'P':
-        space = get_space_pick_P()
+        space = import_pckl2dict(f"{ipath}/space_picking_P.pckl")
     else:
-        space = get_space_pick_S()
+        space = import_pckl2dict(f"{ipath}/space_picking_S.pckl")
     #
     trials = import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{ntrials:03}.pckl")
     arg_best_trial = get_arg_best_trial(trials)
@@ -231,191 +231,6 @@ def get_arg_best_trial(trials):
     losses = [float(trial['result']['loss']) for trial in trials]
     arg_min_loss = np.argmin(losses)
     return arg_min_loss
-
-
-def get_space_det():
-    """
-    returns hyperopt search space used in hyperparameter optimization of model trained for the phase detection task
-    """
-    #
-    space = {
-		#
-		# convolutional layers
-		#
-		'conv_knsize_1': hp.choice('conv_knsize_1', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-		'conv_activ_1': hp.choice('conv_activ_1', ['relu', 'sigmoid']),
-		'conv_drop_1': hp.choice('conv_drop_1', np.arange(.2, .51, .05)),
-		# 'conv_filters': hp.choice('conv_filters', [4, 8, 16, 32]),
-		'conv_filters': hp.choice('conv_filters', np.arange(2, 33, 2)),
-		'conv_nlay': hp.choice('conv_nlay', [
-			{'layers': 'one'},
-			{'layers': 'two',
-			 'conv_knsize_2_1': hp.choice('conv_knsize_2_1', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_2_1': hp.choice('conv_activ_2_1', ['relu', 'sigmoid']),
-			 'conv_drop_2_1': hp.choice('conv_drop_2_1', np.arange(.2, .51, .05)),
-			 'conv_augfilter_2_1': hp.choice('conv_augfilter_2_1', [1, 2]),
-			 },
-			{'layers': 'three',
-			 'conv_knsize_3_1': hp.choice('conv_knsize_3_1', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_3_1': hp.choice('conv_activ_3_1', ['relu', 'sigmoid']),
-			 'conv_drop_3_1': hp.choice('conv_drop_3_1', np.arange(.2, .51, .05)),
-			 'conv_augfilter_3_1': hp.choice('conv_augfilter_3_1', [1, 2]),
-			 'conv_knsize_3_2': hp.choice('conv_knsize_3_2', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_3_2': hp.choice('conv_activ_3_2', ['relu', 'sigmoid']),
-			 'conv_drop_3_2': hp.choice('conv_drop_3_2', np.arange(.2, .51, .05)),
-			 'conv_augfilter_3_2': hp.choice('conv_augfilter_3_2', [1, 2]),
-			 },
-			{'layers': 'four',
-			 'conv_knsize_4_1': hp.choice('conv_knsize_4_1', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_4_1': hp.choice('conv_activ_4_1', ['relu', 'sigmoid']),
-			 'conv_drop_4_1': hp.choice('conv_drop_4_1', np.arange(.2, .51, .05)),
-			 'conv_augfilter_4_1': hp.choice('conv_augfilter_4_1', [1, 2]),
-			 'conv_knsize_4_2': hp.choice('conv_knsize_4_2', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_4_2': hp.choice('conv_activ_4_2', ['relu', 'sigmoid']),
-			 'conv_drop_4_2': hp.choice('conv_drop_4_2', np.arange(.2, .51, .05)),
-			 'conv_augfilter_4_2': hp.choice('conv_augfilter_4_2', [1, 2]),
-			 'conv_knsize_4_3': hp.choice('conv_knsize_4_3', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_4_3': hp.choice('conv_activ_4_3', ['relu', 'sigmoid']),
-			 'conv_drop_4_3': hp.choice('conv_drop_4_3', np.arange(.2, .51, .05)),
-			 'conv_augfilter_4_3': hp.choice('conv_augfilter_4_3', [1, 2]),
-			 },
-			{'layers': 'five',
-			 'conv_knsize_5_1': hp.choice('conv_knsize_5_1', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_5_1': hp.choice('conv_activ_5_1', ['relu', 'sigmoid']),
-			 'conv_drop_5_1': hp.choice('conv_drop_5_1', np.arange(.2, .51, .05)),
-			 'conv_augfilter_5_1': hp.choice('conv_augfilter_5_1', [1, 2]),
-			 'conv_knsize_5_2': hp.choice('conv_knsize_5_2', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_5_2': hp.choice('conv_activ_5_2', ['relu', 'sigmoid']),
-			 'conv_drop_5_2': hp.choice('conv_drop_5_2', np.arange(.2, .51, .05)),
-			 'conv_augfilter_5_2': hp.choice('conv_augfilter_5_2', [1, 2]),
-			 'conv_knsize_5_3': hp.choice('conv_knsize_5_3', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_5_3': hp.choice('conv_activ_5_3', ['relu', 'sigmoid']),
-			 'conv_drop_5_3': hp.choice('conv_drop_5_3', np.arange(.2, .51, .05)),
-			 'conv_augfilter_5_3': hp.choice('conv_augfilter_5_3', [1, 2]),
-			 'conv_knsize_5_4': hp.choice('conv_knsize_5_4', [3, 5, 7, 9, 11, 13, 15, 17, 19, 21]),
-			 'conv_activ_5_4': hp.choice('conv_activ_5_4', ['relu', 'sigmoid']),
-			 'conv_drop_5_4': hp.choice('conv_drop_5_4', np.arange(.2, .51, .05)),
-			 'conv_augfilter_5_4': hp.choice('conv_augfilter_5_4', [1, 2]),
-			 }
-		]),
-		#
-		# dense layers
-		#
-		'dense_units_1': hp.choice('dense_units_1', np.arange(25, 301, 25)),
-		'dense_activ_1': hp.choice('dense_activ_1', ['relu', 'sigmoid']),
-		'dense_drop_1': hp.choice('dense_drop_1', np.arange(.2, .51, .05)),
-		'dense_nlay': hp.choice('dense_nlay', [
-			{'layers': 'one'},
-			{'layers': 'two',
-			 'dense_units_2_1': hp.choice('dense_units_2_1', np.arange(25, 301, 25)),
-			 'dense_activ_2_1': hp.choice('dense_activ_2_1', ['relu', 'sigmoid']),
-			 'dense_drop_2_1': hp.choice('dense_drop_2_1', np.arange(.2, .51, .05)),
-			 },
-			{'layers': 'three',
-			 'dense_units_3_1': hp.choice('dense_units_3_1', np.arange(25, 301, 25)),
-			 'dense_activ_3_1': hp.choice('dense_activ_3_1', ['relu', 'sigmoid']),
-			 'dense_drop_3_1': hp.choice('dense_drop_3_1', np.arange(.2, .51, .05)),
-			 'dense_units_3_2': hp.choice('dense_units_3_2', np.arange(25, 301, 25)),
-			 'dense_activ_3_2': hp.choice('dense_activ_3_2', ['relu', 'sigmoid']),
-			 'dense_drop_3_2': hp.choice('dense_drop_3_2', np.arange(.2, .51, .05)),
-			 },
-			{'layers': 'four',
-			 'dense_units_4_1': hp.choice('dense_units_4_1', np.arange(25, 301, 25)),
-			 'dense_activ_4_1': hp.choice('dense_activ_4_1', ['relu', 'sigmoid']),
-			 'dense_drop_4_1': hp.choice('dense_drop_4_1', np.arange(.2, .51, .05)),
-			 'dense_units_4_2': hp.choice('dense_units_4_2', np.arange(25, 301, 25)),
-			 'dense_activ_4_2': hp.choice('dense_activ_4_2', ['relu', 'sigmoid']),
-			 'dense_drop_4_2': hp.choice('dense_drop_4_2', np.arange(.2, .51, .05)),
-			 'dense_units_4_3': hp.choice('dense_units_4_3', np.arange(25, 301, 25)),
-			 'dense_activ_4_3': hp.choice('dense_activ_4_3', ['relu', 'sigmoid']),
-			 'dense_drop_4_3': hp.choice('dense_drop_4_3', np.arange(.2, .51, .05)),
-			 }
-		]),
-		#
-		# training
-		#
-		'opt': hp.choice('opt', ['adam', 'sgd', 'rmsprop']),
-		'opt_lr': hp.choice('opt_lr', [1e-05, 1e-04, 1e-03, 1e-02, 1e-01]),
-		'batch_size': hp.choice('batch_size', np.arange(50, 210, 10)),
-		#
-		# seismic window
-		#
-		'win_size': hp.choice('win_size', np.arange(200, 501, 20)),
-		'frac_dsamp_p1': hp.choice('frac_dsamp_p1', np.arange(.2, 1.1, .1)),
-		'frac_dsamp_s1': hp.choice('frac_dsamp_s1', np.arange(.2, 1.1, .1)),
-		'frac_dsamp_n1': hp.choice('frac_dsamp_n1', np.arange(.2, 1.1, .1)),
-		#
-		# filter / normalization on seismic waveform.
-        # Integrates all the pre-processing tests into the optimization.
-        # pre_mode = 1: no normalization + no filter
-        # pre_mode = 2: no normalization + band-pass filter (2-10 Hz)
-        # pre_mode = 3: no normalization + high-pass filter (freq_min = 0.2 Hz = 5 s)
-		'pre_mode': hp.choice('pre_mode', [1, 2, 3]),
-    }
-    #
-    return space
-
-
-def get_space_pick_P():
-    """
-    returns hyperopt search space used in hyperparameter optimization of model trained for the P-phase picking task
-    """
-    #
-    space = {
-		#
-		# recurrent layers
-		#
-		'rec_units_1': hp.choice('rec_units_1', np.arange(10, 210, 10)),
-		'rec_drop_1_1': hp.choice('rec_drop_1_1', np.arange(.2, .51, .05)),
-		'rec_drop_1_2': hp.choice('rec_drop_1_2', np.arange(.2, .51, .05)),
-		'rec_nlay': hp.choice('rec_nlay', [
-			{'layers': 'one'},
-			{'layers': 'two',
-             'rec_units_2': hp.choice('rec_units_2', np.arange(10, 210, 10)),
-             'rec_drop_2_1': hp.choice('rec_drop_2_1', np.arange(.2, .51, .05)),
-             'rec_drop_2_2': hp.choice('rec_drop_2_2', np.arange(.2, .51, .05)),
-			 },
-		]),
-		#
-		# general
-		#
-		# 'opt': hp.choice('opt', ['adam', 'sgd', 'rmsprop']),
-		'opt_lr': hp.choice('opt_lr', [1e-05, 1e-04, 1e-03, 1e-02, 1e-01]),
-		'batch_size': hp.choice('batch_size', np.arange(50, 210, 10)),
-    }
-    #
-    return space
-
-
-def get_space_pick_S():
-    """
-    returns hyperopt search space used in hyperparameter optimization of model trained for the S-phase picking task
-    """
-    #
-    space = {
-		#
-		# recurrent layers
-		#
-		'rec_units_1': hp.choice('rec_units_1', np.arange(10, 210, 10)),
-		'rec_drop_1_1': hp.choice('rec_drop_1_1', np.arange(.2, .51, .05)),
-		'rec_drop_1_2': hp.choice('rec_drop_1_2', np.arange(.2, .51, .05)),
-		'rec_nlay': hp.choice('rec_nlay', [
-			{'layers': 'one'},
-			{'layers': 'two',
-             'rec_units_2': hp.choice('rec_units_2', np.arange(10, 210, 10)),
-             'rec_drop_2_1': hp.choice('rec_drop_2_1', np.arange(.2, .51, .05)),
-             'rec_drop_2_2': hp.choice('rec_drop_2_2', np.arange(.2, .51, .05)),
-			 },
-		]),
-		#
-		# general
-		#
-		# 'opt': hp.choice('opt', ['adam', 'sgd', 'rmsprop']),
-		'opt_lr': hp.choice('opt_lr', [1e-05, 1e-04, 1e-03, 1e-02, 1e-01]),
-		'batch_size': hp.choice('batch_size', np.arange(50, 210, 10)),
-    }
-    #
-    return space
 
 
 def make_prediction(model, st, dt, dct_trigger, dct_param):

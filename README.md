@@ -25,7 +25,6 @@ Best performing trained models and other relevant results obtained from the hype
 
 **picking/P** -> P-phase picking related results, and
 
-
 **picking/S** -> S-phase picking related results.
 
 ### 4. DeepPhasePick Worflow
