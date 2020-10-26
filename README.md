@@ -5,9 +5,9 @@ DeepPhasePick is a method for detecting and picking seismic phases from local ea
 
 ...
 
-### 2. Sample Data
+## 2. Sample Data
 
-#### 2.1 Continuous seismic data
+### 2.1 Continuous seismic data
 
 DeepPhasePick is applied on continuous seismic data stored in the archived directory structure in
 
@@ -17,7 +17,7 @@ Where YY is year, NET is the network code, STA is the station code and CH is
 the channel code (for example HH).
 This archive can be updated with new data...
 
-### 3. Optimized trained Models
+## 3. Optimized trained Models
 
 Best performing trained models and other relevant results obtained from the hyperparameter optimization are stored in the following directories:
 
@@ -27,7 +27,7 @@ Best performing trained models and other relevant results obtained from the hype
 
 **picking/S** -> S-phase picking related results.
 
-### 4. DeepPhasePick Worflow
+## 4. DeepPhasePick Worflow
 
 DeepPhasePick worflow is controlled by the parameters defined in several dictionaries in the run\_dpp.py script.
 Using these parameters, dpp.py runs the steps described below...
@@ -62,13 +62,20 @@ dct\_time -> dictionary defining the time over which prediction is made.
 3.3) Plotting of continuous waveform including predicted P, S phases, and corresponding predicted probability time series.
 
 
-
-Please let us know of any bugs found in the code.
-
-
-### Citation:
+## Citation:
 
 If you use this algorithm for research purpose, please cite it as follows:
 
 - Soto, H., & Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
 optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint DOI: XX (https://eartharxiv.org/repository/view/1752/).
+
+Please let us know of any bugs found in the code.
+
+
+## Thanks:
+
+The development of DeepPhasePick method has received financial support from:
+
+-  The HAzard and Risk Team (HART) initiative of the GFZ German Research Centre for Geosciences in collaboration with the Institute of GeoSciences, Energy, Water
+and Environment of the Polytechnic University Tirana, Albania and the KIT Karlsruhe Institute of Technology.
+
