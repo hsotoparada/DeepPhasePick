@@ -5,17 +5,14 @@ DeepPhasePick is a method for detecting and picking seismic phases from local ea
 
 ...
 
-## 2. Sample Data
+## 2. Seismic Data
 
-### 2.1 Continuous seismic data
-
-DeepPhasePick is applied on continuous seismic data stored in the archived directory structure in
+DeepPhasePick is applied on continuous seismic data stored in archived directory structure:
 
 **archive/YY/NET/STA/CH**
 
-Where YY is year, NET is the network code, STA is the station code and CH is
-the channel code (for example HH).
-This archive can be updated with new data...
+Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
+An example is included in the **archive** directory, where users can add new data on which DeepPhasePick can be applied.
 
 ## 3. Optimized trained Models
 
@@ -27,39 +24,38 @@ Best performing trained models and other relevant results obtained from the hype
 
 **picking/S** -> S-phase picking related results.
 
-## 4. DeepPhasePick Worflow
+## 4. DeepPhasePick worflow
 
-DeepPhasePick worflow is controlled by the parameters defined in several dictionaries in the run\_dpp.py script.
-Using these parameters, dpp.py runs the steps described below...
+DeepPhasePick worflow is controlled by the parameters defined in several dictionaries in the **run\_dpp.py** script.
+These parameters are used by **run\_dpp.py** to perform the steps described below.
 
-1) Reading trained models and other relevant results from hyperparameter
-optimization.
+1) Reading of optimized models trained for phase detection and picking tasks, and other relevant results from the hyperparameter optimization.
 
-Parameters used here should not be changed by the user, since...
+Parameters used in this part of the script are fixed and should not be changed by the user.
 
-2) Definition of user-defined parameters...
+2) Definition of user-defined parameters used for detection and picking of phases.
 
 2.1) Parameters used for detection and picking of phases.
 
-dct\_param -> dictionary defining how waveform data is to be preprocessed.
+**dct\_param** -> dictionary defining how waveform data is to be preprocessed.
 
-dct\_trigger -> dictionary defining how predicted probabity time series are
+**dct\_trigger** -> dictionary defining how predicted probabity time series are used to obtain preliminary and refined phase onsets.
 
 2.2) Parameters defining continuous waveform data on which DeepPhasePick is applied.
 
-dct\_sta -> dictionary defining the archived waveform data.
+**dct\_sta** -> dictionary defining the archived waveform data.
 
-dct\_fmt ->  dictionary defining some formatting for plotting prediction
+**dct\_fmt** ->  dictionary defining some formatting for plotting prediction.
 
-dct\_time -> dictionary defining the time over which prediction is made.
+**dct\_time** -> dictionary defining the time over which predictions are made.
 
 3) Run DeepPhasePick on continuous waveform data.
 
-3.1) Perform phase detection, for predicting preliminary phase picks.
+3.1) Perform phase detection: prediction of preliminary phase picks.
 
-3.2) Perform phase picking, for predicting refined phase picks, and optionally plotting them / saving some relevant statistics.
+3.2) Perform phase picking: prediction of refined phase picks, and optionally plotting them and saving some relevant statistics.
 
-3.3) Plotting of continuous waveform including predicted P, S phases, and corresponding predicted probability time series.
+3.3) Plotting of continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
 
 ## Citation:
