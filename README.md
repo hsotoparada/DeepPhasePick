@@ -1,5 +1,11 @@
 # DeepPhasePick
-DeepPhasePick is a method for detecting and picking seismic phases from local earthquakes based on highly optimized convolutional and recurrent deep neural networks.
+
+DeepPhasePick is a method for detecting and picking seismic phases from local earthquakes based on highly optimized deep neural networks.
+In a first stage, phase detection is performed by a Convolutional Neural Network (CNN) on three-component seismograms.
+P- and S-picking is then conducted by two Long-Short Term Memory (LSTM) Recurrent Neural Networks (RNN) on the vertical and the two-horizontal components, respectively.
+CNN and LSTM networks have been trained using >30,000 seismic records extracted from manually-picked event waveforms originating from northern Chile.
+DeepPhasePicks additionally computes uncertainties of the predicted phase time onsets, based on the Monte Carlo Dropout (MCD) technique as an approximation of Bayesian inference.
+Predicted phase time onsets and associated uncertainties can be used to feed a phase associator algorithm in an automatic earthquake location procedure.
 
 ## 1. Install
 
@@ -7,12 +13,12 @@ DeepPhasePick is a method for detecting and picking seismic phases from local ea
 
 ## 2. Seismic Data
 
-DeepPhasePick is applied on continuous seismic data stored in archived directory structure:
+DeepPhasePick is applied on three-component MiniSEED seismic waveforms, which must be stored in an archived directory structure of the type:
 
 **archive/YY/NET/STA/CH**
 
 Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
-An example is included in the **archive** directory, where users can add new data on which DeepPhasePick can be applied.
+Example data is included in the **archive** directory, where users can add new data on which DeepPhasePick can be applied.
 
 ## 3. Optimized trained Models
 
@@ -70,7 +76,7 @@ Please let us know of any bugs found in the code.
 
 ## Thanks:
 
-The development of DeepPhasePick method has received financial support from:
+The development of DeepPhasePick method has received financial support from
 
 -  The HAzard and Risk Team (HART) initiative of the GFZ German Research Centre for Geosciences in collaboration with the Institute of GeoSciences, Energy, Water
 and Environment of the Polytechnic University Tirana, Albania and the KIT Karlsruhe Institute of Technology.
