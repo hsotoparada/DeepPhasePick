@@ -9,7 +9,8 @@
 #
 # and the original publication:
 #
-# Soto and Schurr (2020). DeepPhasePick: A method for Detecting and Picking Seismic Phases from Local Earthquakes
+# Soto and Schurr (2020).
+# DeepPhasePick: A method for Detecting and Picking Seismic Phases from Local Earthquakes
 # based on highly optimized Convolutional and Recurrent Deep Neural Networks.
 # https://eartharxiv.org/repository/view/1752/
 #
