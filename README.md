@@ -1,6 +1,6 @@
 # DeepPhasePick
 
-DeepPhasePick is a method for detecting and picking seismic phases from local earthquakes based on highly optimized deep neural networks.
+DeepPhasePick is a method for automatically detecting and picking seismic phases from local earthquakes based on highly optimized deep neural networks.
 In a first stage, phase detection is performed by a Convolutional Neural Network (CNN) on three-component seismograms.
 P- and S-picking is then conducted by two Long-Short Term Memory (LSTM) Recurrent Neural Networks (RNN) on the vertical and the two-horizontal components, respectively.
 CNN and LSTM networks have been trained using >30,000 seismic records extracted from manually-picked event waveforms originating from northern Chile.
