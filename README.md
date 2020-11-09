@@ -49,11 +49,11 @@ The parameters in this dictionary are defined based on the optimized hyperparame
 **dct\_trigger** --> dictionary defining how predicted probabity time series are used to obtain preliminary and refined phase onsets.
 Here user-defined parameters are included in the following three nested dictionaries:
 
-**dct\_trigger['detec\_thres']**--> dictionary containing user-defined parameters defining how the preliminary onsets are obtained in the phase detection stage.
+**dct\_trigger['detec\_thres']** --> dictionary containing user-defined parameters defining how the preliminary onsets are obtained in the phase detection stage.
 
-**dct\_trigger['detec\_cond']**--> dictionary containing user-defined parameters applied in optional conditions for improving phase detections, by keeping or removing presumed false preliminary onsets.
+**dct\_trigger['detec\_cond']** --> dictionary containing user-defined parameters applied in optional conditions for improving phase detections, by keeping or removing presumed false preliminary onsets.
 
-**dct\_trigger['mcd']**--> dictionary containing user-defined parameters controlling how Monte Carlo Dropout MCD technique is applied in the phase picking stage.
+**dct\_trigger['mcd']** --> dictionary containing user-defined parameters controlling how Monte Carlo Dropout MCD technique is applied in the phase picking stage.
 
 (2.2) Parameters defining continuous waveform data on which DeepPhasePick is applied.
 
@@ -63,10 +63,11 @@ Here user-defined parameters are included in the following three nested dictiona
 
 **dct\_time** --> dictionary defining the time over which predictions are made.
 
-**dct\_out** --> dictionary defining DeepPhasePick output options..
+**dct\_out** --> dictionary defining DeepPhasePick output options.
 
-User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries defined by the label **dct\_out['flag_data']**
-that describes the seismic data on which DeepPhasePick is applied. DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_out['flag_data']**.
+User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = k**, where
+**k = dct\_out['flag_data']** is a label that describes the seismic data on which DeepPhasePick is applied.
+DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_out['flag_data']**.
 
 (3) Run DeepPhasePick on continuous waveform data.
 
