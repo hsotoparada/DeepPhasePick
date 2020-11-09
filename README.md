@@ -24,11 +24,11 @@ Example data is included in the **archive** directory, where new data, on which 
 
 Best performing trained models and other relevant results obtained from the hyperparameter optimization are stored in the following directories:
 
-**detection** -> results related to the phase detection stage,
+**detection** --> results related to the phase detection stage,
 
-**picking/P** -> results related to the P-phase picking stage, and
+**picking/P** --> results related to the P-phase picking stage, and
 
-**picking/S** -> results related to the S-phase picking stage.
+**picking/S** --> results related to the S-phase picking stage.
 
 ## 4. DeepPhasePick worflow
 
@@ -57,13 +57,13 @@ Here user-defined parameters are included in the following three nested dictiona
 
 (2.2) Parameters defining continuous waveform data on which DeepPhasePick is applied.
 
-**dct\_sta** -> dictionary defining the archived waveform data.
+**dct\_sta** --> dictionary defining the archived waveform data.
 
-**dct\_fmt** ->  dictionary defining some formatting for plotting prediction.
+**dct\_fmt** -->  dictionary defining some formatting for plotting prediction.
 
-**dct\_time** -> dictionary defining the time over which predictions are made.
+**dct\_time** --> dictionary defining the time over which predictions are made.
 
-**dct\_out** -> dictionary defining DeepPhasePick output options..
+**dct\_out** --> dictionary defining DeepPhasePick output options..
 
 User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries defined by the label **dct\_out['flag_data']**
 that describes the seismic data on which DeepPhasePick is applied. DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_out['flag_data']**.
