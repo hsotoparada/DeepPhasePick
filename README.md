@@ -43,17 +43,17 @@ Parameters used in this part of the script are fixed and should not be changed b
 
 (2.1) Parameters used for detection and picking of phases.
 
-**dct\_param** -> dictionary defining how waveform data is to be preprocessed.
+**dct\_param** --> dictionary defining how waveform data is to be preprocessed.
 The parameters in this dictionary are defined based on the optimized hyperparameters of the trained models, then it is recommended not to modify them.
 
-**dct\_trigger** -> dictionary defining how predicted probabity time series are used to obtain preliminary and refined phase onsets.
+**dct\_trigger** --> dictionary defining how predicted probabity time series are used to obtain preliminary and refined phase onsets.
 Here user-defined parameters are included in the following three nested dictionaries:
 
-**dct\_trigger['detec\_thres']**: dictionary containing user-defined parameters defining how the preliminary onsets are obtained in the phase detection stage.
+**dct\_trigger['detec\_thres']**--> dictionary containing user-defined parameters defining how the preliminary onsets are obtained in the phase detection stage.
 
-**dct\_trigger['detec\_cond']**: dictionary containing user-defined parameters applied in optional conditions for improving phase detections, by keeping or removing presumed false preliminary onsets.
+**dct\_trigger['detec\_cond']**--> dictionary containing user-defined parameters applied in optional conditions for improving phase detections, by keeping or removing presumed false preliminary onsets.
 
-**dct\_trigger['mcd']**: dictionary containing user-defined parameters controlling how Monte Carlo Dropout MCD technique is applied in the phase picking stage.
+**dct\_trigger['mcd']**--> dictionary containing user-defined parameters controlling how Monte Carlo Dropout MCD technique is applied in the phase picking stage.
 
 (2.2) Parameters defining continuous waveform data on which DeepPhasePick is applied.
 
