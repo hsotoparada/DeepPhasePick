@@ -84,10 +84,12 @@ and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
 (3.3) Plotting of continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
 Two type of output plots can be generated.
-Function **X** creates plots including predicted phase onsets on seismic waveforms. Function **X** further includes predicted probability time series.
-Function **X**, which requires the installation of the plotly library, creates interactive plots of the predicted phase onsets on seismic waveforms and predicted probability time series.
-In all the above plots, the phase onsets shown are the refined picks. Moreover, the user-defined parameter **dct\_out['opath']/dct\_out['flag_data']**
-controls which seismogram components are plotted.
+Function **plot_predicted_wf_phases** creates plots including predicted phase onsets on seismic waveforms.
+Function **plot_predicted_wf_phases_prob** additionally includes predicted probability time series.
+Function **plotly_predicted_wf_phases**, which requires the installation of the plotly library, creates interactive plots of the predicted phase onsets
+on seismic waveforms and predicted probability time series.
+In all the above plots, the phase onsets shown are the refined picks.
+Moreover, the user-defined parameter **dct\_out['plot_comps']** controls which seismogram components are plotted.
 
 ## Citation:
 
