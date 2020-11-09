@@ -65,8 +65,8 @@ Here user-defined parameters are included in the following three nested dictiona
 
 **dct\_out** --> dictionary defining DeepPhasePick output options.
 
-User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = k**, where
-**k = dct\_out['flag_data']** is a label that describes the seismic data on which DeepPhasePick is applied.
+User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = dct\_out['flag_data']**,
+where **key** is a label that describes the seismic data on which DeepPhasePick is applied.
 DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_out['flag_data']**.
 
 (3) Run DeepPhasePick on continuous waveform data.
