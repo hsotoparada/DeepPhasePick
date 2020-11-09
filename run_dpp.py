@@ -18,7 +18,6 @@
 
 import dpp
 import obspy.core as oc
-import numpy as np
 from datetime import datetime
 import os, sys, gc
 
@@ -247,10 +246,6 @@ dct_out = {
 }
 ###### (3) Run DeepPhasePick on continuous waveform data ######
 #
-# plot_comps = ['E','N','Z']
-# flag_data = dct_out['flag_data']
-#
-# for i in range(len(dct_time[flag_data]['tstarts'])):
 for i in range(len(dct_time[dct_out['flag_data']]['tstarts'])):
     #
     # (3.1) perform phase detection: prediction of preliminary phase picks
