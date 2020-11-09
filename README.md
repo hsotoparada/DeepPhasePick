@@ -35,7 +35,7 @@ Best performing trained models and other relevant results obtained from the hype
 The DeepPhasePick workflow is controlled by the parameters in several dictionaries defined in the **run\_dpp.py** script.
 These parameters are used by **run\_dpp.py** to perform the steps described below.
 
-(1) Reading of optimized models trained for phase detection and picking tasks, and other relevant results from the hyperparameter optimization.
+(1) Reading results from hyperparameter optimization performed for phase detection and picking tasks.
 
 Parameters used in this part of the script are fixed and should not be changed by the user.
 
@@ -61,7 +61,7 @@ Here user-defined parameters are included in the following three nested dictiona
 
 **dct\_fmt** -->  dictionary defining some formatting for plotting prediction.
 
-**dct\_time** --> dictionary defining the time over which predictions are made.
+**dct\_time** --> dictionary defining the time over which prediction is performed.
 
 **dct\_out** --> dictionary defining DeepPhasePick output options.
 
@@ -73,10 +73,21 @@ DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_o
 
 (3.1) Perform phase detection: prediction of preliminary phase picks.
 
+Phase detection is performed by the function **run\_detection**, which returns the dictionary **dct_dets** containing predicted discrete phase class
+probability time series and preliminary phase picks.
+
 (3.2) Perform phase picking: prediction of refined phase picks, optionally plotting them and saving some relevant statistics.
+
+Phase picking is performed by the function **run\_picking**, which returns the dictionary **dct_picks** containing preliminary (from detection stage)
+and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
 
 (3.3) Plotting of continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
+Two type of output plots can be generated.
+Function **X** creates plots including predicted phase onsets on seismic waveforms. Function **X** further includes predicted probability time series.
+Function **X**, which requires the installation of the plotly library, creates interactive plots of the predicted phase onsets on seismic waveforms and predicted probability time series.
+In all the above plots, the phase onsets shown are the refined picks. Moreover, the user-defined parameter **dct\_out['opath']/dct\_out['flag_data']**
+controls which seismogram components are plotted.
 
 ## Citation:
 
