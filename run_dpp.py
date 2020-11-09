@@ -247,10 +247,11 @@ dct_out = {
 }
 ###### (3) Run DeepPhasePick on continuous waveform data ######
 #
-plot_comps = ['E','N','Z']
-flag_data = dct_out['flag_data']
+# plot_comps = ['E','N','Z']
+# flag_data = dct_out['flag_data']
 #
-for i in range(len(dct_time[flag_data]['tstarts'])):
+# for i in range(len(dct_time[flag_data]['tstarts'])):
+for i in range(len(dct_time[dct_out['flag_data']]['tstarts'])):
     #
     # (3.1) perform phase detection: prediction of preliminary phase picks
     #
@@ -260,12 +261,11 @@ for i in range(len(dct_time[flag_data]['tstarts'])):
     #
     dct_picks = dpp.run_picking(best_params_det, best_model_pick, best_params_pick, dct_dets, dct_param, dct_trigger, dct_out, save_plot=True, save_stat=True)
     #
-    # (3.3) plotting of continuous waveform with predicted P and S phases, and corresponding predicted probability time series
+    # (3.3) plotting continuous waveform with predicted P and S phases, and corresponding predicted probability time series
     #
-    dpp.plot_predicted_wf_phases(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=plot_comps)
-    dpp.plot_predicted_wf_phases_prob(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=plot_comps)
-    #
-    dpp.plotly_predicted_wf_phases(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, comps=plot_comps)
+    dpp.plot_predicted_wf_phases(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=dct_out['plot_comps'])
+    dpp.plot_predicted_wf_phases_prob(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=dct_out['plot_comps'])
+    dpp.plotly_predicted_wf_phases(best_params_det, dct_dets, dct_param, dct_trigger, dct_picks, dct_out, comps=dct_out['plot_comps'])
     #
     del dct_dets, dct_picks
     gc.collect()

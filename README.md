@@ -67,7 +67,7 @@ Here user-defined parameters are included in the following three nested dictiona
 
 User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = dct\_out['flag_data']**,
 where **key** is a label that describes the seismic data on which DeepPhasePick is applied.
-DeepPhasePick results will be stored in the directory **dct\_out['opath']/dct\_out['flag_data']**.
+DeepPhasePick results will be stored under the current directory in **dct\_out['opath']/dct\_out['flag_data']**.
 
 (3) Run DeepPhasePick on continuous waveform data.
 
@@ -81,12 +81,12 @@ probability time series and preliminary phase picks.
 Phase picking is performed by the function **run\_picking**, which returns the dictionary **dct_picks** containing preliminary (from detection stage)
 and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
 
-(3.3) Plotting of continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
+(3.3) Plotting continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
 Two type of output plots can be generated.
-Function **plot_predicted_wf_phases** creates plots including predicted phase onsets on seismic waveforms.
-Function **plot_predicted_wf_phases_prob** additionally includes predicted probability time series.
-Function **plotly_predicted_wf_phases**, which requires the installation of the plotly library, creates interactive plots of the predicted phase onsets
+The function **plot_predicted_wf_phases** creates plots including predicted phase onsets on seismic waveforms.
+The function **plot_predicted_wf_phases_prob** additionally includes predicted probability time series.
+The function **plotly_predicted_wf_phases**, which requires the installation of the plotly library, creates interactive plots of the predicted phase onsets
 on seismic waveforms and predicted probability time series.
 In all the above plots, the phase onsets shown are the refined picks.
 Moreover, the user-defined parameter **dct\_out['plot_comps']** controls which seismogram components are plotted.
@@ -96,7 +96,7 @@ Moreover, the user-defined parameter **dct\_out['plot_comps']** controls which s
 If you use this algorithm for research purpose, please cite it as follows:
 
 - Soto, H., & Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
-optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint DOI: XX (https://eartharxiv.org/repository/view/1752/).
+optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint: https://eartharxiv.org/repository/view/1752/.
 
 Please let us know of any bugs found in the code.
 
