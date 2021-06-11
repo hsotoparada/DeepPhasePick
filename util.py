@@ -48,7 +48,7 @@ def import_pckl2dict(ipath):
     return dct
 
 
-# TODO: needed
+# TODO: needed ??
 def init_session():
     """
     Sets up tensorflow v2.x / keras session.
@@ -89,7 +89,7 @@ def get_arg_best_trial(trials):
     return arg_min_loss
 
 
-def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num, save_plot=True):
+def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     """
     Creates plots for predicted P-phase time onsets.
     Two types of plots are created: i) entire predicted phase window, ii) zoom centered on refined phase pick, showing MCD results.
@@ -100,7 +100,6 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num, save_plo
     sta: (str) station code of seismic stream.
     opath: (str) output path for created plots.
     plot_num: (int) index of processed phase onset, used for naming plots of predicted phase onsets.
-    save_plot: (bool) True to save plots of predicted phase onset.
     """
     #
     mpl.rcParams['xtick.major.size'] = 8
@@ -231,7 +230,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num, save_plo
     plt.close()
 
 
-def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num, save_plot=True):
+def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     """
     Creates plots for predicted S-phase time onsets.
     Two types of plots are created: i) entire predicted phase window, ii) zoom centered on refined phase pick, showing MCD results.
@@ -242,7 +241,6 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num, save_plo
     sta: (str) station code of seismic stream.
     opath: (str) output path for created plots.
     plot_num: (int) index of processed phase onset, used for naming plots of predicted phase onsets.
-    save_plot: (bool) True to save plots of predicted phase onset.
     """
     #
     mpl.rcParams['xtick.major.size'] = 8
@@ -467,8 +465,9 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num, save_plo
     plt.close()
 
 
+# TODO: implement option to plot prob funcs for P, S, Noise classes; shifted or not. Like is done for comps
 # def plot_predicted_wf_phases(best_params, dct_dets, dct_data, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=['Z','E']):
-def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
+def plot_predicted_wf_phases(config, data, model, plot_comps=['Z','E'], plot_probs=[]):
     """
     Plots predicted picks on seismic waveforms.
     ----------
@@ -479,7 +478,7 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
     dct_picks: (dict) dictionary containing preliminary (from detection stage) and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
     dct_out: (dict) dictionary defining DeepPhasePick output options.
     dct_fmt: (dict) dictionary of parameters defining some formatting for plotting prediction.
-    comps: (list) seismic components to be plotted.
+    plot_comps: (list) seismic components to be plotted.
     """
     #
     # plot format parameters
@@ -516,10 +515,10 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
         #
         for sta in data.data[i]['st']:
             #
-            fig = plt.figure(figsize=(20., 5.*len(comps)))
+            fig = plt.figure(figsize=(20., 5.*len(plot_comps)))
             plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
             #
-            for n, ch in enumerate(comps):
+            for n, ch in enumerate(plot_comps):
                 #
                 ax = []
                 #
@@ -539,7 +538,7 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
                 # print(tr_y.min(), tr_y.max(), y_max)
                 #
                 # plot trace
-                ax.append(fig.add_subplot(len(comps), 1, n+1))
+                ax.append(fig.add_subplot(len(plot_comps), 1, n+1))
                 ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
                 #
                 tr_label = f"{tr.stats.network}.{tr.stats.station}.{tr.stats.channel}"
@@ -550,11 +549,24 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
                 samp_dt = 1 / config.params['samp_freq']
                 tp_shift = (best_params['frac_dsamp_p1']-.5) * best_params['win_size'] * samp_dt
                 ts_shift = (best_params['frac_dsamp_s1']-.5) * best_params['win_size'] * samp_dt
+                tn_shift = (best_params['frac_dsamp_n1']-.5) * best_params['win_size'] * samp_dt
                 #
-                x_prob_p = model.detections[i]['pred'][sta]['tt']+tp_shift
-                y_prob_p = model.detections[i]['pred'][sta]['ts'][:,0]
-                x_prob_s = model.detections[i]['pred'][sta]['tt']+ts_shift
-                y_prob_s = model.detections[i]['pred'][sta]['ts'][:,1]
+                # plot predicted P, S, Noise class probability functions
+                #
+                if len(plot_probs) > 0:
+                    ax_tmp = ax[-1].twinx()
+                if 'P' in plot_probs:
+                    x_prob_p = model.detections[i][sta]['tt']+tp_shift
+                    y_prob_p = model.detections[i][sta]['ts'][:,0]
+                    ax_tmp.plot(x_prob_p, y_prob_p, c='red', lw=0.75)
+                if 'S' in plot_probs:
+                    x_prob_s = model.detections[i][sta]['tt']+ts_shift
+                    y_prob_s = model.detections[i][sta]['ts'][:,1]
+                    ax_tmp.plot(x_prob_s, y_prob_s, c='blue', lw=0.75)
+                if 'N' in plot_probs:
+                    x_prob_n = model.detections[i][sta]['tt']+tn_shift
+                    y_prob_n = model.detections[i][sta]['ts'][:,2]
+                    ax_tmp.plot(x_prob_n, y_prob_n, c='k', lw=0.75)
                 #
                 tstart_plot = tr.stats.starttime
                 tend_plot = tr.stats.endtime
@@ -613,7 +625,7 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
             #
             plt.tight_layout()
             #
-            opath = model.detections[i]['pred'][sta]['opath']
+            opath = model.detections[i][sta]['opath']
             tstr = opath.split('wf_')[1].split('/')[0]
             opath = f"{opath}/wf_plots"
             os.makedirs(opath, exist_ok=True)
@@ -625,306 +637,10 @@ def plot_predicted_wf_phases(config, data, model, comps=['Z','E']):
             plt.close()
 
 
-def plot_predicted_wf_phases_o(best_params, dct_dets, dct_data, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=['Z','E']):
-    """
-    Plots predicted picks on seismic waveforms.
-    ----------
-    best_params: (dict) dictionary of best performing hyperparameters optimized for phase detection.
-    dct_dets: (dict) dictionary containing predicted discrete phase class probability time series and preliminary phase picks.
-    dct_param: (dict) dictionary of parameters defining how waveform data is to be preprocessed.
-    dct_trigger: (dict) dictionary of parameters defining how predicted probability time series are used to obtain preliminary and refined phase onsets.
-    dct_picks: (dict) dictionary containing preliminary (from detection stage) and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
-    dct_out: (dict) dictionary defining DeepPhasePick output options.
-    dct_fmt: (dict) dictionary of parameters defining some formatting for plotting prediction.
-    comps: (list) seismic components to be plotted.
-    """
-    #
-    # plot format parameters
-    mpl.rcParams['xtick.major.size'] = 14
-    mpl.rcParams['xtick.major.width'] = 2
-    mpl.rcParams['xtick.minor.size'] = 6
-    mpl.rcParams['xtick.minor.width'] = 2
-    mpl.rcParams['ytick.major.size'] = 14
-    mpl.rcParams['ytick.major.width'] = 2
-    mpl.rcParams['ytick.minor.size'] = 6
-    mpl.rcParams['ytick.minor.width'] = 2
-    mpl.rcParams['xtick.labelsize'] = 22
-    mpl.rcParams['ytick.labelsize'] = 22
-    mpl.rcParams['axes.titlesize'] = 22
-    mpl.rcParams['axes.labelsize'] = 22
-    #
-    print("#")
-    #
-    flag_data = dct_out['flag_data']
-    stas_plot = list(dct_data[1]['st'].keys())
-    print(stas_plot)
-    print("#")
-    #
-    print(list(dct_data.keys()))
-    for k in dct_data:
-        print(dct_data[k]['twin'])
-        print(dct_data[k]['st'][stas_plot[0]].__str__(extended=True))
-    #
-    print("#")
-    print("creating plots...")
-    for sta in stas_plot:
-        #
-        for i in dct_data:
-            #
-            fig = plt.figure(figsize=(20., 5.*len(comps)))
-            plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
-            #
-            for n, ch in enumerate(comps):
-                #
-                ax = []
-                #
-                # subplot - waveform trace (input for CNN)
-                #
-                tr = dct_data[i]['st'][sta].select(channel='*'+ch)[0]
-                dt = tr.stats.delta
-                tr_y = tr.data
-                # if dct_param['st_normalized']:
-                #     y_max = np.array([np.abs(tr.data).max() for tr in dct_data[i]['st'][sta]]).max()
-                #     tr_y /= y_max
-                print(tr_y.min(), tr_y.max())
-                if dct_param['st_normalized']:
-                    y_max = np.abs(tr.data).max()
-                    tr_y /= y_max
-                tr_x = np.arange(tr.data.size) * dt
-                print(tr_y.min(), tr_y.max(), y_max)
-                #
-                # plot trace
-                ax.append(fig.add_subplot(len(comps), 1, n+1))
-                ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
-                #
-                tr_label = f"{tr.stats.network}.{tr.stats.station}.{tr.stats.channel}"
-                ax[-1].text(0.02, .95, tr_label, size=14., ha='left', va='center', transform=ax[-1].transAxes)
-                #
-                # retrieve predicted P, S class probability time series
-                #
-                tp_shift = (best_params['frac_dsamp_p1']-.5) * best_params['win_size'] * dct_param['samp_dt']
-                ts_shift = (best_params['frac_dsamp_s1']-.5) * best_params['win_size'] * dct_param['samp_dt']
-                #
-                x_prob_p = dct_dets[i]['pred'][sta]['tt']+tp_shift
-                y_prob_p = dct_dets[i]['pred'][sta]['ts'][:,0]
-                x_prob_s = dct_dets[i]['pred'][sta]['tt']+ts_shift
-                y_prob_s = dct_dets[i]['pred'][sta]['ts'][:,1]
-                #
-                tstart_plot = tr.stats.starttime
-                tend_plot = tr.stats.endtime
-                print("#")
-                print(sta, i, tstart_plot, tend_plot)
-                #
-                # lines at predicted picks
-                #
-                if sta in dct_picks[i]:
-                    #
-                    for ii, k in enumerate(dct_picks[i][sta]['P']['true_arg']):
-                        #
-                        # P pick corrected after phase picking
-                        #
-                        tstart_win = dct_picks[i][sta]['P']['twd'][k]['tstart_win']
-                        tend_win = dct_picks[i][sta]['P']['twd'][k]['tend_win']
-                        if dct_trigger['mcd']['run_mcd']:
-                            tpick_pred = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick']
-                            # tpick_th1 = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_th1']
-                            # tpick_th2 = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_th2']
-                            # pick_class = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['pick_class']
-                        else:
-                            tpick_pred = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_det']
-                        tp_plot = tstart_win - tstart_plot + tpick_pred
-                        # ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='--')
-                        ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='-')
-                    #
-                    for jj, l in enumerate(dct_picks[i][sta]['S']['true_arg']):
-                        #
-                        # S pick corrected after phase picking
-                        #
-                        tstart_win = dct_picks[i][sta]['S']['twd'][l]['tstart_win']
-                        if dct_trigger['mcd']['run_mcd']:
-                            tpick_pred = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick']
-                            # tpick_th1 = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_th1']
-                            # tpick_th2 = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_th2']
-                            # pick_class = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['pick_class']
-                        else:
-                            tpick_pred = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_det']
-                        ts_plot = tstart_win - tstart_plot + tpick_pred
-                        # ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='--')
-                        ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='-')
-                #
-                # ax[-1].set_xlim([0, ...])
-                # ax[-1].xaxis.set_ticks(np.arange(0.,tr_x.max()+1.,500.)[:])
-                ax[-1].xaxis.set_ticks(np.arange(0.,tr_x.max()+1.,dct_fmt[flag_data][sta]['dx_tick'])[:])
-                ylim = dct_fmt[flag_data][sta]['ylim1']
-                ax[-1].set_ylim(ylim)
-            #
-            plt.tight_layout()
-            #
-            opath = dct_dets[i]['pred'][sta]['opath']
-            tstr = opath.split('wf_')[1].split('/')[0]
-            opath = f"{opath}/wf_plots"
-            os.makedirs(opath, exist_ok=True)
-            #
-            ofig = f"{opath}/plot_pred_{flag_data}_{sta}_{tstr}"
-            plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
-            plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
-            plt.close()
-
-
-# TODO: integrate into plot_predicted_wf_phases()
 # TODO: implement option to plot prob funcs for P, S, Noise classes. Like is done for comps
-def plot_predicted_wf_phases_prob(best_params, dct_dets, dct_data, dct_param, dct_trigger, dct_picks, dct_out, dct_fmt, comps=['Z','E']):
-    """
-    Plots predicted picks and discrete probability time series on seismic waveforms.
-    ----------
-    best_params: (dict) dictionary of best performing hyperparameters optimized for phase detection.
-    dct_dets: (dict) dictionary containing predicted discrete phase class probability time series and preliminary phase picks.
-    dct_param: (dict) dictionary of parameters defining how waveform data is to be preprocessed.
-    dct_trigger: (dict) dictionary of parameters defining how predicted probability time series are used to obtain preliminary and refined phase onsets.
-    dct_picks: (dict) dictionary containing preliminary (from detection stage) and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
-    dct_out: (dict) dictionary defining DeepPhasePick output options.
-    dct_fmt: (dict) dictionary of parameters defining some formatting for plotting prediction.
-    comps: (list) seismic components to be plotted.
-    """
-    #
-    # plot format parameters
-    mpl.rcParams['xtick.major.size'] = 14
-    mpl.rcParams['xtick.major.width'] = 2
-    mpl.rcParams['xtick.minor.size'] = 6
-    mpl.rcParams['xtick.minor.width'] = 2
-    mpl.rcParams['ytick.major.size'] = 14
-    mpl.rcParams['ytick.major.width'] = 2
-    mpl.rcParams['ytick.minor.size'] = 6
-    mpl.rcParams['ytick.minor.width'] = 2
-    mpl.rcParams['xtick.labelsize'] = 22
-    mpl.rcParams['ytick.labelsize'] = 22
-    mpl.rcParams['axes.titlesize'] = 22
-    mpl.rcParams['axes.labelsize'] = 22
-    #
-    print("#")
-    flag_data = dct_out['flag_data']
-    stas_plot = list(dct_data[1]['st'].keys())
-    print(stas_plot)
-    print("#")
-    #
-    print(list(dct_data.keys()))
-    for k in dct_data:
-        print(dct_data[k]['twin'])
-        print(dct_data[k]['st'][stas_plot[0]].__str__(extended=True))
-    #
-    print("#")
-    print("creating plots...")
-    for sta in stas_plot:
-        #
-        for i in dct_data:
-            #
-            fig = plt.figure(figsize=(20., 5.*len(comps)))
-            plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
-            #
-            for n, ch in enumerate(comps):
-                #
-                ax = []
-                #
-                # subplot - waveform trace (input for CNN)
-                #
-                tr = dct_data[i]['st'][sta].select(channel='*'+ch)[0]
-                dt = tr.stats.delta
-                tr_y = tr.data
-                if dct_param['st_normalized']:
-                    y_max = np.array([np.abs(tr.data).max() for tr in dct_data[i]['st'][sta]]).max()
-                    tr_y /= y_max
-                tr_x = np.arange(tr.data.size) * dt
-                #
-                # plot trace
-                ax.append(fig.add_subplot(len(comps), 1, n+1))
-                ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
-                #
-                tr_label = f"{tr.stats.network}.{tr.stats.station}.{tr.stats.channel}"
-                ax[-1].text(0.02, .95, tr_label, size=14., ha='left', va='center', transform=ax[-1].transAxes)
-                #
-                # plot predicted P, S class probability functions
-                #
-                ax_tmp = ax[-1].twinx()
-                tp_shift = (best_params['frac_dsamp_p1']-.5) * best_params['win_size'] * dct_param['samp_dt']
-                ts_shift = (best_params['frac_dsamp_s1']-.5) * best_params['win_size'] * dct_param['samp_dt']
-                #
-                x_prob_p = dct_dets[i]['pred'][sta]['tt']+tp_shift
-                y_prob_p = dct_dets[i]['pred'][sta]['ts'][:,0]
-                x_prob_s = dct_dets[i]['pred'][sta]['tt']+ts_shift
-                y_prob_s = dct_dets[i]['pred'][sta]['ts'][:,1]
-                ax_tmp.plot(x_prob_p, y_prob_p, c='red', lw=0.75)
-                ax_tmp.plot(x_prob_s, y_prob_s, c='blue', lw=0.75)
-                # ax_tmp.plot(x_prob_p, y_prob_p, 'ro', ms=1.)
-                # ax_tmp.plot(x_prob_s, y_prob_s, 'bo', ms=1.)
-                #
-                tstart_plot = tr.stats.starttime
-                tend_plot = tr.stats.endtime
-                print("#")
-                print(sta, i, tstart_plot, tend_plot)
-                #
-                # lines at predicted picks
-                #
-                #
-                if sta in dct_picks[i]:
-                    #
-                    for ii, k in enumerate(dct_picks[i][sta]['P']['true_arg']):
-                        #
-                        # P pick corrected after phase picking
-                        #
-                        tstart_win = dct_picks[i][sta]['P']['twd'][k]['tstart_win']
-                        tend_win = dct_picks[i][sta]['P']['twd'][k]['tend_win']
-                        if dct_trigger['mcd']['run_mcd']:
-                            tpick_pred = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick']
-                            # tpick_th1 = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_th1']
-                            # tpick_th2 = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_th2']
-                            # pick_class = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['pick_class']
-                        else:
-                            tpick_pred = dct_picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_det']
-                        tp_plot = tstart_win - tstart_plot + tpick_pred
-                        ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='--')
-                    #
-                    for jj, l in enumerate(dct_picks[i][sta]['S']['true_arg']):
-                        #
-                        # S pick corrected after phase picking
-                        #
-                        tstart_win = dct_picks[i][sta]['S']['twd'][l]['tstart_win']
-                        if dct_trigger['mcd']['run_mcd']:
-                            tpick_pred = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick']
-                            # tpick_th1 = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_th1']
-                            # tpick_th2 = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_th2']
-                            # pick_class = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['pick_class']
-                        else:
-                            tpick_pred = dct_picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_det']
-                        ts_plot = tstart_win - tstart_plot + tpick_pred
-                        ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='--')
-                #
-                # axes properties
-                #
-                ax_tmp.set_ylim([-0.05, 1.05])
-                ax_tmp.yaxis.set_ticks(np.arange(0.,1.1,.1)[:])
-                #
-                # ax[-1].set_xlim([0, ...])
-                # ax[-1].xaxis.set_ticks(np.arange(0.,tr_x.max()+1.,500.)[:])
-                ax[-1].xaxis.set_ticks(np.arange(0.,tr_x.max()+1.,dct_fmt[flag_data][sta]['dx_tick'])[:])
-                ylim = dct_fmt[flag_data][sta]['ylim1']
-                ax[-1].set_ylim(ylim)
-            #
-            plt.tight_layout()
-            #
-            opath = dct_dets[i]['pred'][sta]['opath']
-            tstr = opath.split('wf_')[1].split('/')[0]
-            opath = f"{opath}/wf_plots"
-            os.makedirs(opath, exist_ok=True)
-            #
-            ofig = f"{opath}/plot_pred_{flag_data}_{sta}_{tstr}_prob"
-            plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
-            plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
-            plt.close()
-
-
-# TODO: implement option to plot prob funcs for P, S, Noise classes. Like is done for comps
+# TODO: unexpected plot when using plot_probs=[] or not all the prob classes.
 # def plotly_predicted_wf_phases(best_params, dct_dets, dct_data, dct_param, dct_trigger, dct_picks, dct_out, comps=['Z','E']):
-def plotly_predicted_wf_phases(config, data, model, comps=['Z','E']):
+def plotly_predicted_wf_phases(config, data, model, plot_comps=['Z','E'], plot_probs=['P','S','N'], shift_probs=True):
     """
     Creates interactive plot of predicted picks on seismic waveforms and discrete probability time series.
     Requires plotly library.
@@ -935,7 +651,7 @@ def plotly_predicted_wf_phases(config, data, model, comps=['Z','E']):
     dct_trigger: (dict) dictionary of parameters defining how predicted probability time series are used to obtain preliminary and refined phase onsets.
     dct_picks: (dict) dictionary containing preliminary (from detection stage) and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
     dct_out: (dict) dictionary defining DeepPhasePick output options.
-    comps: (list) seismic components to be plotted.
+    plot_comps: (list) seismic components to be plotted.
     """
     import plotly.express as px
     import plotly.graph_objects as go
@@ -984,7 +700,7 @@ def plotly_predicted_wf_phases(config, data, model, comps=['Z','E']):
                 #
                 nrow += 1
                 stas_plot.append(sta)
-                chs = comps
+                chs = plot_comps
                 #
                 nxax += 1
                 nyax += 1
@@ -1017,28 +733,42 @@ def plotly_predicted_wf_phases(config, data, model, comps=['Z','E']):
                 #
                 # plot predicted P,S class probability functions
                 #
-                samp_dt = 1 / config.params['samp_freq']
-                tp_shift = (best_params['frac_dsamp_p1']-.5) * best_params['win_size'] * samp_dt
-                ts_shift = (best_params['frac_dsamp_s1']-.5) * best_params['win_size'] * samp_dt
-                #
-                nyax += 1
-                stas_plot.append(sta)
-                dct_layout[nyax] = {
-                    'xmin': tr_x.min(), 'xmax': tr_x.max(), 'ymin': 0, 'ymax': 1.,
-                    'anchor': [nxax, nyax], 'label': 'prob',
-                }
-                fig.add_trace(
-                    go.Scatter(x=model.detections[w]['pred'][sta]['tt']+tp_shift, y=model.detections[w]['pred'][sta]['ts'][:,0], mode='lines', line={'color':'red', 'width':.75},
-                        name='prob P'), row=nrow, col=1, secondary_y=True,
-                    # go.Scatter(x=model.detections[w]['pred'][sta]['tt']+tp_shift, y=model.detections[w]['pred'][sta]['ts'][:,0], mode='lines+markers', line={'color':'red', 'width':.75},
-                    #     marker={'color':'red', 'size':2}, name='prob P'), row=nrow, col=1, secondary_y=True,
-                )
-                fig.add_trace(
-                    go.Scatter(x=model.detections[w]['pred'][sta]['tt']+ts_shift, y=model.detections[w]['pred'][sta]['ts'][:,1], mode='lines', line={'color':'blue', 'width':.75},
-                        name='prob S'), row=nrow, col=1, secondary_y=True,
-                    # go.Scatter(x=model.detections[w]['pred'][sta]['tt']+ts_shift, y=model.detections[w]['pred'][sta]['ts'][:,1], mode='lines+markers', line={'color':'blue', 'width':.75},
-                    #     marker={'color':'blue', 'size':2}, name='prob S'), row=nrow, col=1, secondary_y=True,
-                )
+                if len(plot_probs) > 0:
+                    if shift_probs:
+                        samp_dt = 1 / config.params['samp_freq']
+                        tp_shift = (best_params['frac_dsamp_p1']-.5) * best_params['win_size'] * samp_dt
+                        ts_shift = (best_params['frac_dsamp_s1']-.5) * best_params['win_size'] * samp_dt
+                        tn_shift = (best_params['frac_dsamp_n1']-.5) * best_params['win_size'] * samp_dt
+                    else:
+                        tp_shift = 0
+                        ts_shift = 0
+                        tn_shift = 0
+                    #
+                    nyax += 1
+                    stas_plot.append(sta)
+                    dct_layout[nyax] = {
+                        'xmin': tr_x.min(), 'xmax': tr_x.max(), 'ymin': 0, 'ymax': 1.,
+                        'anchor': [nxax, nyax], 'label': 'prob',
+                    }
+                    if 'P' in plot_probs:
+                        fig.add_trace(
+                            go.Scatter(x=model.detections[w][sta]['tt']+tp_shift, y=model.detections[w][sta]['ts'][:,0], mode='lines', line={'color':'red', 'width':.75},
+                                name='prob P'), row=nrow, col=1, secondary_y=True,
+                            # go.Scatter(x=model.detections[w]['pred'][sta]['tt']+tp_shift, y=model.detections[w]['pred'][sta]['ts'][:,0], mode='lines+markers', line={'color':'red', 'width':.75},
+                            #     marker={'color':'red', 'size':2}, name='prob P'), row=nrow, col=1, secondary_y=True,
+                        )
+                    if 'S' in plot_probs:
+                        fig.add_trace(
+                            go.Scatter(x=model.detections[w][sta]['tt']+ts_shift, y=model.detections[w][sta]['ts'][:,1], mode='lines', line={'color':'blue', 'width':.75},
+                                name='prob S'), row=nrow, col=1, secondary_y=True,
+                            # go.Scatter(x=model.detections[w]['pred'][sta]['tt']+ts_shift, y=model.detections[w]['pred'][sta]['ts'][:,1], mode='lines+markers', line={'color':'blue', 'width':.75},
+                            #     marker={'color':'blue', 'size':2}, name='prob S'), row=nrow, col=1, secondary_y=True,
+                        )
+                    if 'N' in plot_probs:
+                        fig.add_trace(
+                            go.Scatter(x=model.detections[w][sta]['tt']+tn_shift, y=model.detections[w][sta]['ts'][:,2], mode='lines', line={'color':'black', 'width':.75},
+                                name='prob N'), row=nrow, col=1, secondary_y=True,
+                        )
             #
             # x-axes properties
             #

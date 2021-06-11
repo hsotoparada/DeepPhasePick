@@ -200,8 +200,6 @@ class Model():
         return strided.copy()
 
 
-                # tr_win, tt, ts, prob_S, prob_P, prob_N, st_trim_flag, st_trimmed = self._make_prediction(config, model, st_tmp)
-                # # tr_win, tt, ts, prob_S, prob_P, prob_N, st_trim_flag, st_trimmed = make_prediction(best_model, best_params, st_tmp, dct_param, dct_trigger)
     # def make_prediction(best_model, best_params, st, dct_param, dct_trigger):
     def _make_prediction(self, config, model, st):
         """
@@ -271,8 +269,6 @@ class Model():
         return (tr_win, tt, ts, prob_S, prob_P, prob_N, st_trim_flag, st)
 
 
-                # p_picks, s_picks, p_trigs, s_trigs = self._calculate_trigger(config, model, st_tmp, net, s, tt, ts, prob_P, prob_S)
-                # # p_picks, s_picks, p_trigs, s_trigs = calculate_trigger(st_tmp, net, s, tt, ts, prob_P, prob_S, dct_param, dct_trigger, best_params)
     # def calculate_trigger(st, net, sta, tt, ts, prob_P, prob_S, dct_param, dct_trigger, best_params):
     def _calculate_trigger(self, config, model, st, net, sta, tt, ts, prob_P, prob_S):
         """
@@ -329,11 +325,12 @@ class Model():
             s_picks.append((stamp_pick, pick))
         #
         return p_picks, s_picks, p_trigs, s_trigs
+        ofile.close()
 
 
-    # TODO: create method: read_detections. To read saved detections dict into model object
+    # TODO: remove 'pred' key from self.detections dict
     # def run_detection(best_model, best_params, dct_data, dct_param, dct_trigger, dct_out):
-    def run_detection(self, config, data, model):
+    def run_detection(self, config, data, model, save_dets=False, save_data=False):
         """
         Performs P- and S-phase detection task.
         Returns a dictionary containing predicted discrete phase class probability time series and preliminary phase picks.
@@ -354,7 +351,9 @@ class Model():
         self.detections = {}
         # for i in dct_data:
         for i in data.data:
-            self.detections[i] = {'pred': {}}
+            # self.detections[i] = {'pred': {}}
+            self.detections[i] = {}
+            opath = data.data[i]['opath']
             for s in sorted(data.data[i]['st'].keys())[:]:
                 #
                 st_tmp = data.data[i]['st'][s]
@@ -379,14 +378,15 @@ class Model():
                 #
                 # get preliminary phase picks
                 #
-                opath = data.data[i]['opath']
+                # opath = data.data[i]['opath']
                 os.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 # ofile_path = f"{opath}/pick_stats/{s}_pick_detected"
                 p_picks, s_picks, p_trigs, s_trigs = self._calculate_trigger(config, model, st_tmp, net, s, tt, ts, prob_P, prob_S)
                 # p_picks, s_picks, p_trigs, s_trigs = calculate_trigger(st_tmp, net, s, tt, ts, prob_P, prob_S, dct_param, dct_trigger, best_params)
                 print(f"p_picks = {len(p_picks)}, s_picks = {len(s_picks)}")
                 #
-                self.detections[i]['pred'][s] = {
+                # self.detections[i]['pred'][s] = {
+                self.detections[i][s] = {
                     'dt': dt, 'tt': tt, 'ts': ts,
                     'p_picks': p_picks, 's_picks': s_picks,
                     'p_trigs': p_trigs, 's_trigs': s_trigs,
@@ -395,12 +395,26 @@ class Model():
                 # TODO: check if this actually update the data object
                 if st_trim_flag:
                     data.data[i]['st'][s] = st_trimmed
-        #
-        # return self.detections, data
+            #
+            if save_dets:
+                util.export_dict2pckl(self.detections[i], f"{opath}/pick_stats/detections.pckl")
+            if save_data:
+                os.makedirs(f"{opath}/data", exist_ok=True)
+                util.export_dict2pckl(data.data[i], f"{opath}/data/data.pckl")
 
 
-                # # dct_picks[k][sta] = get_dct_picks(self.detections[k]['pred'][sta], dct_param, dct_trigger)
-                # self.picks[k][sta] = self._get_dct_picks(config, self.detections[k]['pred'][sta])
+    def read_detections(self, data):
+        """
+        Read picks from dictionary stored when using argument save_picks=True in method model.run_picking().
+        ----------
+        """
+        self.detections = {}
+        for i in data.data:
+            ipath = data.data[i]['opath']
+            self.detections[i] = util.import_pckl2dict(f"{ipath}/pick_stats/detections.pckl")
+
+
+
     # def get_dct_picks(dct_dets, dct_param, dct_trigger):
     def _get_initial_picks(self, config, dct_dets):
         """
@@ -415,6 +429,7 @@ class Model():
         # user-defined parameters
         #
         op_conds = config.picking['op_conds']
+        print(op_conds)
         dt_PS_max = config.picking['dt_PS_max'] # seconds
         tp_th_add = config.picking['tp_th_add'] # seconds
         dt_sdup_max = config.picking['dt_sdup_max'] # seconds
@@ -449,6 +464,8 @@ class Model():
         if '1' in op_conds:
             #
             for i, tp in enumerate(tpicks_ml_p[:]):
+                print('1', i, tp)
+                # sys.exit()
                 #
                 # search S picks detected nearby P phases
                 #
@@ -529,6 +546,7 @@ class Model():
             #
             s_arg_nonused = [i for i, ts in enumerate(tpicks_ml_s) if i not in s_arg_used]
             for i in s_arg_nonused:
+                print('2', i)
                 #
                 ts = tpicks_ml_s[i]
                 #
@@ -565,6 +583,7 @@ class Model():
             s_arg_used_dup = []
             dct_s_dup = {}
             for i, s_arg in enumerate(s_arg_selected):
+                print('3', i, s_arg)
                 #
                 dct_s_dup[s_arg] = [s_arg]
                 ts = tpicks_ml_s[s_arg]
@@ -602,6 +621,7 @@ class Model():
             #
             dct_sp_near = {}
             for i, s_arg in enumerate(s_arg_selected):
+                print('4', i, s_arg)
                 #
                 dct_sp_near[s_arg] = []
                 ts = tpicks_ml_s[s_arg]
@@ -682,10 +702,8 @@ class Model():
         return dct_picks
 
 
-                            # # dct_mcd = get_predicted_pick(best_model_pick['P'], best_params_pick['P'], dct_param, dct_trigger, data_P, sta, tpick_win, opath, ii, flag_data, save_plot)
-                            # dct_mcd = self._get_predicted_pick(config, model, data_P, sta, tpick_win, opath, ii, save_plot)
     # def get_predicted_pick(best_model, best_params, dct_param, dct_trigger, data, sta, tpick_det, opath, plot_num, flag_data, save_plot=True):
-    def _get_predicted_pick(self, config, model, data, sta, tpick_det, opath, plot_num, save_plot=True):
+    def _get_predicted_pick(self, config, model, data, sta, tpick_det, opath, plot_num, save_plots=True):
         """
         Gets refined P- or S-phase time onset and its uncertainty, by applying Monte Carlo Dropout (MCD) on the input seismic data.
         Returns a dictionary containing relevant statistics of the computed pick.
@@ -700,7 +718,7 @@ class Model():
         opath: (str) output path for saving plots of predicted phase onsets.
         plot_num: (int) index of processed phase onset, used for naming plots of predicted phase onsets.
         flag_data: (str) flag defining which data is used for making predictions.
-        save_plot: (bool) True to save plots of predicted phase onset.
+        save_plots: (bool) True to save plots of predicted phase onset.
         """
         #
         # apply Monte Carlo Dropout to get predicted time onset with uncertainty
@@ -784,13 +802,13 @@ class Model():
             }
         }
         #
-        if save_plot:
+        if save_plots:
             if data.shape[2] == 1:
                 # plot_predicted_phase_P(dct_mcd, dct_param, data, sta, opath, plot_num, save_plot)
-                util.plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num, save_plot)
+                util.plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num)
             elif data.shape[2] == 2:
                 # plot_predicted_phase_S(dct_mcd, dct_param, data, sta, opath, plot_num, save_plot)
-                util.plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num, save_plot)
+                util.plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num)
         #
         return dct_mcd
 
@@ -805,7 +823,7 @@ class Model():
         """
         #
         stas = list(dct_data['st'].keys())
-        opath = dct_dets['pred'][stas[0]]['opath']
+        opath = dct_dets[stas[0]]['opath']
         ofile = open(f"{opath}/pick_stats/pick_stats",'a')
         util.export_dict2pckl(dct_picks, f"{opath}/pick_stats/picks.pckl")
         #
@@ -862,9 +880,8 @@ class Model():
         ofile.close()
 
 
-    # TODO: create method: read_picks. To read saved picks dict into model object
     # def run_picking(best_params, best_model_pick, best_params_pick, dct_dets, dct_data, dct_param, dct_trigger, dct_out, save_plot=True, save_stat=True):
-    def run_picking(self, config, data, model, save_plot=True, save_stat=True):
+    def run_picking(self, config, data, model, save_plots=True, save_stats=True, save_picks=False):
         """
         Performs P- and S-phase picking task.
         Returns dictionary containing preliminary (from detection stage) and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
@@ -876,8 +893,8 @@ class Model():
         dct_param: (dict) dictionary of parameters defining how waveform data is to be preprocessed.
         dct_trigger: (dict) dictionary of parameters defining how predicted probability time series are used to obtain preliminary and refined phase onsets.
         dct_out: (dict) dictionary defining DeepPhasePick output options.
-        save_plot: (bool) True to save plots of individual predicted phase onsets.
-        save_stat: (bool) True to save statistics of individual predicted phase onsets.
+        save_plots: (bool) True to save plots of individual predicted phase onsets.
+        save_stats: (bool) True to save statistics of individual predicted phase onsets.
         """
         # flag_data = dct_out['flag_data']
         # dct_picks = {}
@@ -894,10 +911,10 @@ class Model():
             stas = list(data.data[k]['st'].keys())
             if len(stas) == 0:
                 continue
-            opath = self.detections[k]['pred'][stas[0]]['opath']
+            opath = self.detections[k][stas[0]]['opath']
             stas_tp = []
             for sta in stas:
-                if len(self.detections[k]['pred'][sta]['p_picks']) == 0:
+                if len(self.detections[k][sta]['p_picks']) == 0:
                     continue
                 stas_tp.append(sta)
             #
@@ -906,10 +923,10 @@ class Model():
                 #
                 # predicted and detected picks
                 print("#")
-                p_picks = np.array(self.detections[k]['pred'][sta]['p_picks'])
-                s_picks = np.array(self.detections[k]['pred'][sta]['s_picks'])
+                p_picks = np.array(self.detections[k][sta]['p_picks'])
+                s_picks = np.array(self.detections[k][sta]['s_picks'])
                 # dct_picks[k][sta] = get_dct_picks(self.detections[k]['pred'][sta], dct_param, dct_trigger)
-                self.picks[k][sta] = self._get_initial_picks(config, self.detections[k]['pred'][sta])
+                self.picks[k][sta] = self._get_initial_picks(config, self.detections[k][sta])
                 #
                 # get P-phase windows
                 #
@@ -919,8 +936,8 @@ class Model():
                     #
                     self.picks[k][sta][phase]['twd'][i] = {}
                     trig = self.picks[k][sta][phase]['trig'][i]
-                    y_prob = self.detections[k]['pred'][sta]['ts'][:,0]
-                    x_prob = self.detections[k]['pred'][sta]['tt'] + tp_shift
+                    y_prob = self.detections[k][sta]['ts'][:,0]
+                    x_prob = self.detections[k][sta]['tt'] + tp_shift
                     #
                     prob_arg = np.argmax(y_prob[trig[0]:trig[1]]) + trig[0]
                     twd_1 = best_params['frac_dsamp_p1'] * best_params['win_size'] * samp_dt
@@ -954,13 +971,13 @@ class Model():
                             data_P /= np.abs(data_P).max() # normalize before predicting picks
                             data_P = data_P[:1]
                             print("#")
-                            print(f"pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
+                            print(f"P pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
                             # print(f"data_P: {data_P.shape}")
                             data_P = data_P.reshape(1, data_P.shape[1], 1)
                             # print(f"data_P: {data_P.shape}")
                             # print(data_P.mean(), data_P.min(), data_P.max())
                             # dct_mcd = get_predicted_pick(best_model_pick['P'], best_params_pick['P'], dct_param, dct_trigger, data_P, sta, tpick_win, opath, ii, flag_data, save_plot)
-                            dct_mcd = self._get_predicted_pick(config, model.model_picking_P, data_P, sta, tpick_win, opath, ii, save_plot)
+                            dct_mcd = self._get_predicted_pick(config, model.model_picking_P, data_P, sta, tpick_win, opath, ii, save_plots)
                             self.picks[k][sta][phase]['twd'][i]['pick_ml'] = dct_mcd['pick']
                             self.picks[k][sta][phase]['twd'][i]['mc_ml'] = dct_mcd['mcd']
                 #
@@ -972,8 +989,8 @@ class Model():
                     #
                     self.picks[k][sta][phase]['twd'][i] = {}
                     trig = self.picks[k][sta][phase]['trig'][i]
-                    y_prob = self.detections[k]['pred'][sta]['ts'][:,1]
-                    x_prob = self.detections[k]['pred'][sta]['tt'] + ts_shift
+                    y_prob = self.detections[k][sta]['ts'][:,1]
+                    x_prob = self.detections[k][sta]['tt'] + ts_shift
                     #
                     prob_arg = np.argmax(y_prob[trig[0]:trig[1]]) + trig[0]
                     twd_1 = best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
@@ -1007,19 +1024,29 @@ class Model():
                         data_S /= np.abs(data_S).max()
                         data_S = data_S[-2:]
                         print("#")
-                        print(f"pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
+                        print(f"S pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
                         # print(f"data_S: {data_S.shape}")
                         data_S = data_S.T.reshape(1, data_S.shape[1], 2)
                         # print(f"data_S: {data_S.shape}")
                         # print(data_S.mean(), data_S.min(), data_S.max())
                         # dct_mcd = get_predicted_pick(best_model_pick['S'], best_params_pick['S'], dct_param, dct_trigger, data_S, sta, tpick_win, opath, ii, flag_data, save_plot)
-                        dct_mcd = self._get_predicted_pick(config, model.model_picking_S, data_S, sta, tpick_win, opath, ii, save_plot)
+                        dct_mcd = self._get_predicted_pick(config, model.model_picking_S, data_S, sta, tpick_win, opath, ii, save_plots)
                         self.picks[k][sta][phase]['twd'][i]['pick_ml'] = dct_mcd['pick']
                         self.picks[k][sta][phase]['twd'][i]['mc_ml'] = dct_mcd['mcd']
             #
-            if save_stat:
+            if save_stats:
                 self._save_pick_stats(self.picks[k], self.detections[k], data.data[k])
-        #
-        # return dct_picks
+            #
+            if save_picks:
+                util.export_dict2pckl(self.picks[k], f"{opath}/pick_stats/picks.pckl")
 
 
+    def read_picks(self, data):
+        """
+        Read picks from dictionary stored when using argument save_picks=True in method model.run_picking().
+        ----------
+        """
+        self.picks = {}
+        for i in data.data:
+            ipath = data.data[i]['opath']
+            self.picks[i] = util.import_pckl2dict(f"{ipath}/pick_stats/picks.pckl")
