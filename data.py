@@ -239,7 +239,6 @@ class Data():
             for t, tr in enumerate(stt):
                 sta = tr.stats.station
                 #
-                # TODO: update this in final dpp.py
                 st_check = stt.select(station=sta)
                 if len(st_check) < 3:
                     print(f"skipping trace of stream with less than 3 components: {tr}")
