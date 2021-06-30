@@ -71,21 +71,22 @@ Alternatively, waveforms can be read from a local directory with no specific str
     dpp_data.read_from_directory(dpp_config)
 
 
-### 3. Optimized trained models
+### 3. Phase Detection and Picking
 
-For DPP to use the optimized trained models, an instance of the class Model() needs to be created, for example:
+In order to run the phase detection and picking stages, an instance of the class Model() needs to be created, for example:
 
     dpp_model = model.Model()
 
-The trained model weights and other relevant model information obtained from the hyperparameter optimization are read by default from the following directories:
+This reads the optimized trained models into DPP.
+By default, the trained model weights and other relevant model information obtained from the hyperparameter optimization are read from the following directories:
 
-**detection/...** --> results related to the phase detection stage,
+**detection/...** --> which contains the information related to the optimized phase detection model,
 
-**picking/.../P** --> results related to the P-phase picking stage, and
+**picking/.../P** --> which contains the information related to the optimized P-phase picking model, and
 
-**picking/.../S** --> results related to the S-phase picking stage.
+**picking/.../S** --> which contains the information related to the optimized S-phase picking model.
 
-Once models are read into DPP, model information can be printed for example by using:
+Once the models are read into DPP, model information can be retrieved for example by using:
 
     print(dpp_model.model_detection['best_model'].summary())
     print(dpp_model.model_picking_P['best_model'].summary())
