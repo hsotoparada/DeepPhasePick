@@ -19,22 +19,23 @@ You can directly clone the public repository:
 
 ### 2. Seismic Data
 
-DPP method is applied on three-component MiniSEED seismic waveforms. Reading of seismic data into DPP is done through an instance of Data(), for example:
+DPP method is applied on three-component MiniSEED seismic waveforms.
+To read the seismic waveforms into DPP an instance of the class Data() needs to be created, for example:
 
     dpp_data = data.Data()
 
-Then, the data can be read into DPP from a local archive directory structured as:
+Then, the data can be read into DPP from a local archive directory by using:
+
+    dpp_data.read_from_archive(dpp_config)
+
+The local archive must have the following structure:
 
 **archive/YY/NET/STA/CH**
 
 Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
 Example data is included in the **archive** directory, where new data, on which DeepPhasePick will be applied, can be added by users.
 
-This can be done for example by running:
-
-    dpp_data.read_from_archive(dpp_config)
-
-Alternatively, waveforms can be read from a local directory with no specific structure. This can be done with:
+Alternatively, waveforms can be read from a local directory with no specific structure. For example by using:
 
     dpp_data.read_from_directory(dpp_config)
 
