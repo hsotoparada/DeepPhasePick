@@ -15,7 +15,36 @@ You can directly clone the public repository:
 
 ...
 
-## 2. DeepPhasePick worflow
+## 2. DPP Worflow
+
+### 1. DPP configuration
+
+The configuration of the method needs to be initialized by creating an instance of the class Config(), for example:
+
+    dpp_config = config.Config()
+
+Then, the parameters controlling different stages in the method can be configured as follows.
+
+To set the parameters defining how seismic waveforms is processed before phase detection, use:
+
+    dpp_config.set_data_params()
+
+To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
+
+    dpp_config.set_trigger()
+
+To set the parameters applied in optional conditions for improving preliminary picks obtained from phase detection, use:
+
+    dpp_config.set_picking()
+
+To set the parameters defining the waveform data on which DeepPhasePick is applied, use:
+
+    dpp_config.set_data()
+
+To set the parameters defining time windows over which DeepPhasePick are applied, use:
+
+    dpp_config.set_time()
+
 
 ### 2. Seismic Data
 
