@@ -19,29 +19,29 @@ You can directly clone the public repository:
 
 ### 1. DPP configuration
 
-The configuration of the method needs to be initialized by creating an instance of the class Config(), for example:
+#### The configuration of the method needs to be initialized by creating an instance of the class Config(), for example:
 
     dpp_config = config.Config()
 
 Then, the parameters controlling different stages in the method can be configured as follows.
 
-To set the parameters defining how seismic waveforms is processed before phase detection, use:
+#### To set the parameters defining how seismic waveforms is processed before phase detection, use:
 
     dpp_config.set_data_params()
 
-To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
+#### To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
 
     dpp_config.set_trigger()
 
-To set the parameters applied in optional conditions for improving preliminary picks obtained from phase detection, use:
+#### To set the parameters applied in optional conditions for improving preliminary picks obtained from phase detection, use:
 
     dpp_config.set_picking()
 
-To set the parameters defining the waveform data on which DeepPhasePick is applied, use:
+#### To set the parameters defining the waveform data on which DeepPhasePick is applied, use:
 
     dpp_config.set_data()
 
-To set the parameters defining time windows over which DeepPhasePick are applied, use:
+#### To set the parameters defining time windows over which DeepPhasePick are applied, use:
 
     dpp_config.set_time()
 
@@ -49,11 +49,12 @@ To set the parameters defining time windows over which DeepPhasePick are applied
 ### 2. Seismic Data
 
 DPP method is applied on three-component MiniSEED seismic waveforms.
-To read the seismic waveforms into DPP an instance of the class Data() needs to be created, for example:
+
+#### To read the seismic waveforms into DPP an instance of the class Data() needs to be created, for example:
 
     dpp_data = data.Data()
 
-Then, the data can be read into DPP from a local archive directory by using:
+#### Then, the data can be read into DPP from a local archive directory by using:
 
     dpp_data.read_from_archive(dpp_config)
 
@@ -64,9 +65,10 @@ The local archive must have the following structure:
 Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
 Example data is included in the **archive** directory, where new data, on which DeepPhasePick will be applied, can be added by users.
 
-Alternatively, waveforms can be read from a local directory with no specific structure. For example by using:
+#### Alternatively, waveforms can be read from a local directory with no specific structure. For example by using:
 
     dpp_data.read_from_directory(dpp_config)
+
 
 ### 3. Optimized trained Models
 
