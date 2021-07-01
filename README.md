@@ -19,16 +19,34 @@ You can directly clone the public repository:
 
 ### 1. DPP configuration
 
-The configuration of the method needs to be initialized by creating an instance of the class Config(), for example:
+Before running DPP, the method needs to be configured by creating an instance of the class Config(), for example using:
 
     import config, data, model, util
     dpp_config = config.Config()
 
-Then, the parameters controlling different stages in the method can be configured as follows.
+Then, parameters controlling different stages in the method can be configured as described below.
 
 To set the parameters defining how seismic waveforms is processed before phase detection, use:
 
     dpp_config.set_data_params()
+
+        """
+        Set parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms
+
+        Parameters
+        ----------
+        n_shift: int, optional
+            step size (in samples) defining discrete probability time series.
+        pthres_p: list of float, optional
+            probability thresholds defining P-phase trigger on (pthres_p[0]) and off (pthres_p[1]) times.
+            See thres1 and thres2 parameters in obspy trigger_onset function.
+        pthres_s: list of float, optional
+            probability thresholds defining S-phase trigger on (pthres_s[0]) and off (pthres_s[1]) times.
+            See thres1 and thres2 parameters in function obspy.signal.trigger.trigger_onset.
+        max_trig_len: list of int, optional
+            maximum lengths (in samples) of triggered P (max_trig_len[0]) and S (max_trig_len[1]) phase.
+            See max_len parameter in function obspy.signal.trigger.trigger_onset.
+        """
 
 To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
 
@@ -59,7 +77,7 @@ Then, the data can be read into DPP from a local archive directory using:
 
     dpp_data.read_from_archive(dpp_config)
 
-The local archive must have the following structure:
+The local archive needs to have the following commonly used structure:
 
 **archive/YY/NET/STA/CH**
 
@@ -86,9 +104,11 @@ By default, the trained model weights and other relevant model information obtai
 
 **picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
 
-Here `"20201002"` is a string indicating the version of each model, defined by the arguments `version_det`, `version_pick_P`, `version_pick_S` given to Model().
-New trained models will be added in the near future, which can be selected modifying this argument.
-See the class documentation for details on the other optional arguments.
+Here `20201002` is a string indicating the version of each model, defined by the optional arguments `version_det`, `version_pick_P`, `version_pick_S` of Model().
+
+New trained models (with their corresponding versions) will be added in the near future, which can be accessed by modifying this argument.
+
+See the class documentation for details on other optional arguments.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
 
@@ -101,15 +121,19 @@ Then, to run the phase detection on the selected seismic waveforms, use:
     dpp_model.run_detection(dpp_config, dpp_data)
 
 This will compute discrete class probability time series from predictions, which are used to obtain preliminary phase picks.
+
 Use the optional argument `save_dets = True` (by default is `False`) to save a dictionary containing the class probabilities and preliminary picks for further use.
+
 Use the optional argument `save_data = True` (by default is `False`) to save a dictionary containing the seismic waveform data used for phase detection if needed.
 
 Next the phase picking can be run to refine the preliminary picks, using:
 
-    dpp_model.run_picking(dpp_config, dpp_data, save_plots=True, save_stats=True, save_picks=True)
+    dpp_model.run_picking(dpp_config, dpp_data)
 
 Use the optional argument `save_plots = True` (by default is `True`) to create figures of individual predicted phase onsets.
+
 Use the optional argument `save_stats = True` (by default is `True`) to save statistics of predicted phase onsets.
+
 Use the optional argument `save_picks = True` (by default is `False`) to save a dictionary containing relevant information on preliminary and refined phase picks.
 
 
@@ -151,18 +175,6 @@ Here user-defined parameters are included in the following three nested dictiona
 User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = dct\_out['flag_data']**,
 where **key** is a label that describes the seismic data on which DeepPhasePick is applied.
 DeepPhasePick results will be stored under the current directory in **dct\_out['opath']/dct\_out['flag_data']**.
-
-(3) Run DeepPhasePick on continuous waveform data.
-
-(3.1) Perform phase detection: prediction of preliminary phase picks.
-
-Phase detection is performed by the function **run\_detection**, which returns the dictionary **dct_dets** containing predicted discrete phase class
-probability time series and preliminary phase picks.
-
-(3.2) Perform phase picking: prediction of refined phase picks, optionally plotting them and saving some relevant statistics.
-
-Phase picking is performed by the function **run\_picking**, which returns the dictionary **dct_picks** containing preliminary (from detection stage)
-and refined (by Monte Carlo Dropout MCD in picking stage) phase picks.
 
 (3.3) Plotting continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
