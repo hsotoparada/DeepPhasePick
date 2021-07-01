@@ -26,43 +26,96 @@ Before running DPP, the method needs to be configured by creating an instance of
 
 Then, parameters controlling different stages in the method can be configured as described below.
 
+To set the parameters selecting the waveform data on which DeepPhasePick is applied, use:
+
+    dpp_config.set_data()
+
+For example, to select the channel `HH`, station `PB01` from network `CX`, which is stored in
+the archive directory `data`, and save the results in directory `out`, run:
+
+    dpp_config.set_data(
+        stas=['PB01'],
+        net='CX',
+        ch='HH',
+        archive='data',
+        opath='out'
+    )
+
 To set the parameters defining how seismic waveforms is processed before phase detection, use:
 
     dpp_config.set_data_params()
 
-        """
-        Set parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms
+For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not the data sampling rate) before running the detection:
 
-        Parameters
-        ----------
-        n_shift: int, optional
-            step size (in samples) defining discrete probability time series.
-        pthres_p: list of float, optional
-            probability thresholds defining P-phase trigger on (pthres_p[0]) and off (pthres_p[1]) times.
-            See thres1 and thres2 parameters in obspy trigger_onset function.
-        pthres_s: list of float, optional
-            probability thresholds defining S-phase trigger on (pthres_s[0]) and off (pthres_s[1]) times.
-            See thres1 and thres2 parameters in function obspy.signal.trigger.trigger_onset.
-        max_trig_len: list of int, optional
-            maximum lengths (in samples) of triggered P (max_trig_len[0]) and S (max_trig_len[1]) phase.
-            See max_len parameter in function obspy.signal.trigger.trigger_onset.
-        """
+    dpp_config.set_data_params(
+        samp_freq=100.,
+        st_filter=True,
+        filter_type='highpass',
+        filter_fmin=.2
+    )
 
 To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
 
     dpp_config.set_trigger()
 
-To set the parameters applied in optional conditions for improving preliminary picks obtained from phase detection, use:
+For example, the following will compute the discrete probability time series in phase detection every 20 samples, using a probability threshold of 0.95 for P- and S-phases:
+
+    dpp_config.set_trigger(n_shift=20, pthres_p=[0.95, 0.001], pthres_s=[0.95, 0.001])
+
+To set the parameters applied in optional conditions for refining preliminary picks obtained from phase detection, use:
 
     dpp_config.set_picking()
 
-To set the parameters defining the waveform data on which DeepPhasePick is applied, use:
+For example, the following will remove preliminary picks which are presumed false positive, by applying all of the four optional conditions described in the
+Supplementary Material of Soto and Schurr (2021). This is the default and recommended option, especially when dealing with very noise waveforms.
+Please refer to the Text S1 in the above-mentioned Supplementary Material to see how the different user-defined parameters are used to remove preliminary picks.
 
-    dpp_config.set_data()
+Then refined pick onsets and their time uncertainties will be computed by applying 20 iterations of Monte Carlo Dropout.
+
+    dpp_config.set_picking(
+        op_conds=['1','2','3','4'],
+        dt_ps_max=25.,
+        dt_sdup_max=2.,
+        dt_sp_near=1.5,
+        tp_th_add=1.5,
+        run_mcd=True
+        mcd_iter=20,
+    )
 
 To set the parameters defining time windows over which DeepPhasePick are applied, use:
 
     dpp_config.set_time()
+
+    def set_time(self, dt_iter, tstart, tend):
+        """
+        Set parameters defining time windows over which DeepPhasePick are applied.
+
+        Parameters
+        ----------
+        dt_iter: float
+            time step (in seconds) between consecutive time windows.
+        tstarts: str
+            start time to define time windows, in format "YYYY-MM-DDTHH:MM:SS".
+        tends: str
+            end time to define time windows, in format "YYYY-MM-DDTHH:MM:SS".
+
+        """
+        self.time = {
+            'dt_iter': dt_iter,
+            'tstart': oc.UTCDateTime(tstart),
+            'tend': oc.UTCDateTime(tend),
+        }
+
+For example, the following will create 30-min (1800-seconds) time windows in the period between `2015-04-03T00:00:00` and `2015-04-04T00:00:00` (24 hrs)
+from the selected seismic waveforms on which DPP will be applied:
+
+    dpp_config.set_time(
+        dt_iter=1800.,
+        tstart = "2015-04-03T02:00:00",
+        tend = "2015-04-03T03:00:00",
+    )
+
+More details on the arguments accepted by each of these functions can be seen from the corresponding function documentation.
 
 
 ### 2. Seismic Data
