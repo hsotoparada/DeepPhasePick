@@ -54,6 +54,15 @@ For example, the following will apply a highpass filter (> .5 Hz) and resample t
         filter_fmin=.2
     )
 
+DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using:
+
+    dpp_config.set_time()
+
+For example, to create 30-min (1800-seconds) time windows in the period between
+`2015-04-03T00:00:00` and `2015-04-04T00:00:00` (24 hrs), use:
+
+    dpp_config.set_time(dt_iter=1800., tstart="2015-04-03T02:00:00", tend="2015-04-03T03:00:00")
+
 To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
 
     dpp_config.set_trigger()
@@ -81,15 +90,6 @@ Then refined pick onsets and their time uncertainties will be computed by applyi
         run_mcd=True
         mcd_iter=20,
     )
-
-DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using:
-
-    dpp_config.set_time()
-
-For example, to create 30-min (1800-seconds) time windows in the period between
-`2015-04-03T00:00:00` and `2015-04-04T00:00:00` (24 hrs), use:
-
-    dpp_config.set_time(dt_iter=1800., tstart = "2015-04-03T02:00:00", tend = "2015-04-03T03:00:00")
 
 More details on the arguments accepted by each of these functions can be seen from the corresponding function documentation.
 
