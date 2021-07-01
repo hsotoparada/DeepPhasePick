@@ -94,7 +94,7 @@ Then refined pick onsets and their time uncertainties will be computed by applyi
         mcd_iter=20,
     )
 
-More details on the arguments accepted by each of these functions can be seen from the corresponding function documentation.
+More details on the arguments accepted by each of these configuration functions can be seen from the corresponding function documentation.
 
 
 ### 2. Seismic Data
