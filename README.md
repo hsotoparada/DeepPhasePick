@@ -51,11 +51,11 @@ To set the parameters defining time windows over which DeepPhasePick are applied
 
 DPP method is applied on three-component MiniSEED seismic waveforms.
 
-To read the seismic waveforms into DPP an instance of the class Data() needs to be created, for example:
+To read the seismic waveforms into DPP an instance of the class Data() needs to be created, for example using:
 
     dpp_data = data.Data()
 
-Then, the data can be read into DPP from a local archive directory by using:
+Then, the data can be read into DPP from a local archive directory using:
 
     dpp_data.read_from_archive(dpp_config)
 
@@ -66,25 +66,29 @@ The local archive must have the following structure:
 Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
 Example data is included in the **archive** directory, where new data, on which DeepPhasePick will be applied, can be added by users.
 
-Alternatively, waveforms can be read from a local directory with no specific structure. For example by using:
+Alternatively, waveforms can be read from a local directory with no specific structure. For example using:
 
     dpp_data.read_from_directory(dpp_config)
 
 
 ### 3. Phase Detection and Picking
 
-In order to run the phase detection and picking stages, an instance of the class Model() needs to be created, for example:
+In order to run the phase detection and picking stages, an instance of the class Model() needs to be created, for example using:
 
     dpp_model = model.Model()
 
 This reads the optimized trained models into DPP.
 By default, the trained model weights and other relevant model information obtained from the hyperparameter optimization are read from the following directories:
 
-**detection/...** --> which contains the information related to the optimized phase detection model,
+**detection/20201002**, which contains the files related to the optimized phase detection model,
 
-**picking/.../P** --> which contains the information related to the optimized P-phase picking model, and
+**picking/20201002/P**, which contains the files related to the optimized P-phase picking model, and
 
-**picking/.../S** --> which contains the information related to the optimized S-phase picking model.
+**picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
+
+Here `"20201002"` is a string indicating the version of each model, defined by the arguments `version_det`, `version_pick_P`, `version_pick_S` given to Model().
+New trained models will be added in the near future, which can be selected modifying this argument.
+See the class documentation for details on the other optional arguments.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
 
@@ -92,23 +96,24 @@ Once the models are read into DPP, model information can be retrieved for exampl
     print(dpp_model.model_picking_P['best_model'].summary())
     print(dpp_model.model_picking_S['best_model'].summary())
 
-To run the phase detection on the selected seismic waveforms, use:
+Then, to run the phase detection on the selected seismic waveforms, use:
 
-    dpp_model.run_detection(dpp_config, dpp_data, save_dets=True, save_data=True)
+    dpp_model.run_detection(dpp_config, dpp_data)
 
-If `save_dets=True`...
-If `save_data=True`...
+This will compute discrete class probability time series from predictions, which are used to obtain preliminary phase picks.
+Use the optional argument `save_dets = True` (by default is `False`) to save a dictionary containing the class probabilities and preliminary picks for further use.
+Use the optional argument `save_data = True` (by default is `False`) to save a dictionary containing the seismic waveform data used for phase detection if needed.
 
-To run the phase picking on the detected picks, use:
+Next the phase picking can be run to refine the preliminary picks, using:
 
     dpp_model.run_picking(dpp_config, dpp_data, save_plots=True, save_stats=True, save_picks=True)
 
-If `save_plots=True`...
-If `save_stats=True`...
-If `save_picks=True`...
+Use the optional argument `save_plots = True` (by default is `True`) to create figures of individual predicted phase onsets.
+Use the optional argument `save_stats = True` (by default is `True`) to save statistics of predicted phase onsets.
+Use the optional argument `save_picks = True` (by default is `False`) to save a dictionary containing relevant information on preliminary and refined phase picks.
 
 
-### 4. DeepPhasePick worflow
+### 4. DeepPhasePick worflow -- OLD
 
 The DeepPhasePick workflow is controlled by the parameters in several dictionaries defined in the **run\_dpp.py** script.
 These parameters are used by **run\_dpp.py** to perform the steps described below.
