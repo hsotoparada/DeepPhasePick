@@ -96,6 +96,8 @@ Then refined pick onsets and their time uncertainties will be computed by applyi
 
 More details on the arguments accepted by each of these configuration functions can be seen from the corresponding function documentation.
 
+Note that, instead of configuring DPP by using the functions describe above, each set of parameters can also be as a dictionary to `config.Config()`.
+See the class documentation for to use this approach.
 
 ### 2. Seismic Data
 
