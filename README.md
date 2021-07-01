@@ -30,11 +30,11 @@ To set the parameters selecting the waveform data on which DeepPhasePick is appl
 
     dpp_config.set_data()
 
-For example, to select the channel `HH`, station `PB01` from network `CX`, which is stored in
+For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
 
     dpp_config.set_data(
-        stas=['PB01'],
+        stas=['PB01', 'PB02'],
         net='CX',
         ch='HH',
         archive='data',
@@ -61,7 +61,10 @@ DPP will be applied on the selected seismic data (see function `set_data()`) in 
 For example, to create 30-min (1800-seconds) time windows in the period between
 `2015-04-03T00:00:00` and `2015-04-03T02:00:00` (2 hours), use:
 
-    dpp_config.set_time(dt_iter=1800., tstart="2015-04-03T02:00:00", tend="2015-04-03T03:00:00")
+    dpp_config.set_time(dt_iter=1800., tstart="2015-04-03T00:00:00", tend="2015-04-03T02:00:00")
+
+Note that the window will have the duration except for the last window, which will be filled with the remainder data in case
+`dt_iter + tstart (last window) < tend`.
 
 To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
 
