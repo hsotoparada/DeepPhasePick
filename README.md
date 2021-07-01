@@ -63,7 +63,7 @@ For example, to create 30-min (1800-seconds) time windows in the period between
 
     dpp_config.set_time(dt_iter=1800., tstart="2015-04-03T00:00:00", tend="2015-04-03T02:00:00")
 
-Note that the windows will have the same duration except for the last window, which will be filled with the remainder data in case
+Note that the windows will have the same duration except for the last window, which will be filled with the remainder data until `tend` in case
 `dt_iter + tstart(last window) > tend`.
 
 To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
