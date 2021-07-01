@@ -45,7 +45,7 @@ To set the parameters defining how seismic waveforms is processed before phase d
 
     dpp_config.set_data_params()
 
-For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not the data sampling rate) before running the detection:
+For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not already the data sampling rate) before running the detection:
 
     dpp_config.set_data_params(
         samp_freq=100.,
@@ -82,38 +82,14 @@ Then refined pick onsets and their time uncertainties will be computed by applyi
         mcd_iter=20,
     )
 
-To set the parameters defining time windows over which DeepPhasePick are applied, use:
+DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using:
 
     dpp_config.set_time()
 
-    def set_time(self, dt_iter, tstart, tend):
-        """
-        Set parameters defining time windows over which DeepPhasePick are applied.
+For example, to create 30-min (1800-seconds) time windows in the period between
+`2015-04-03T00:00:00` and `2015-04-04T00:00:00` (24 hrs), use:
 
-        Parameters
-        ----------
-        dt_iter: float
-            time step (in seconds) between consecutive time windows.
-        tstarts: str
-            start time to define time windows, in format "YYYY-MM-DDTHH:MM:SS".
-        tends: str
-            end time to define time windows, in format "YYYY-MM-DDTHH:MM:SS".
-
-        """
-        self.time = {
-            'dt_iter': dt_iter,
-            'tstart': oc.UTCDateTime(tstart),
-            'tend': oc.UTCDateTime(tend),
-        }
-
-For example, the following will create 30-min (1800-seconds) time windows in the period between `2015-04-03T00:00:00` and `2015-04-04T00:00:00` (24 hrs)
-from the selected seismic waveforms on which DPP will be applied:
-
-    dpp_config.set_time(
-        dt_iter=1800.,
-        tstart = "2015-04-03T02:00:00",
-        tend = "2015-04-03T03:00:00",
-    )
+    dpp_config.set_time(dt_iter=1800., tstart = "2015-04-03T02:00:00", tend = "2015-04-03T03:00:00")
 
 More details on the arguments accepted by each of these functions can be seen from the corresponding function documentation.
 
@@ -190,44 +166,11 @@ Use the optional argument `save_stats = True` (by default is `True`) to save sta
 Use the optional argument `save_picks = True` (by default is `False`) to save a dictionary containing relevant information on preliminary and refined phase picks.
 
 
+### 4. Plotting results
+
+...
+
 ### 4. DeepPhasePick worflow -- OLD
-
-The DeepPhasePick workflow is controlled by the parameters in several dictionaries defined in the **run\_dpp.py** script.
-These parameters are used by **run\_dpp.py** to perform the steps described below.
-
-(1) Reading results from hyperparameter optimization performed for phase detection and picking tasks.
-
-Parameters used in this part of the script are fixed and should not be changed by the user.
-
-(2) Definition of user-defined parameters used for detection and picking of phases.
-
-(2.1) Parameters used for detection and picking of phases.
-
-**dct\_param** --> dictionary defining how waveform data is to be preprocessed.
-The parameters in this dictionary are defined based on the optimized hyperparameters of the trained models, then it is recommended not to modify them.
-
-**dct\_trigger** --> dictionary defining how predicted probabity time series are used to obtain preliminary and refined phase onsets.
-Here user-defined parameters are included in the following three nested dictionaries:
-
-**dct\_trigger['detec\_thres']** --> dictionary containing user-defined parameters defining how the preliminary onsets are obtained in the phase detection stage.
-
-**dct\_trigger['detec\_cond']** --> dictionary containing user-defined parameters applied in optional conditions for improving phase detections, by keeping or removing presumed false preliminary onsets.
-
-**dct\_trigger['mcd']** --> dictionary containing user-defined parameters controlling how Monte Carlo Dropout MCD technique is applied in the phase picking stage.
-
-(2.2) Parameters defining continuous waveform data on which DeepPhasePick is applied.
-
-**dct\_sta** --> dictionary defining the archived waveform data.
-
-**dct\_fmt** -->  dictionary defining some formatting for plotting prediction.
-
-**dct\_time** --> dictionary defining the time over which prediction is performed.
-
-**dct\_out** --> dictionary defining DeepPhasePick output options.
-
-User-defined parameters in **dct\_sta**, **dct\_fmt**, and **dct\_time** dictionaries should be included within nested dictionaries with **key = dct\_out['flag_data']**,
-where **key** is a label that describes the seismic data on which DeepPhasePick is applied.
-DeepPhasePick results will be stored under the current directory in **dct\_out['opath']/dct\_out['flag_data']**.
 
 (3.3) Plotting continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
 
