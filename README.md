@@ -136,9 +136,9 @@ By default, the trained model weights and other relevant model information obtai
 
 **picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
 
-Here `20201002` is a string indicating the version of each model, defined by the optional arguments `version_det`, `version_pick_P`, `version_pick_S` of Model().
+Here `20201002` is a string indicating the version of each model, defined by the optional arguments `version_det`, `version_pick_P`, `version_pick_S` in Model().
 
-New trained models (with their corresponding versions) will be added in the near future, which can be accessed by modifying this argument.
+This allows that new trained models, which will be added in the future, can be accessed by using their corresponding versions.
 
 See the class documentation for details on other optional arguments.
 
