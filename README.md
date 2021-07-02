@@ -171,21 +171,18 @@ Use the optional argument `save_stats = True` (by default is `True`) to save sta
 Use the optional argument `save_picks = True` (by default is `False`) to save a dictionary containing relevant information on preliminary and refined phase picks.
 
 
-### 4. Plotting results
+### 4. Plotting predicted P and S phases
 
-...
+To plot the continuous waveforms together with the predicted P and S phases, use:
 
-### 4. DeepPhasePick worflow -- OLD
+    util.plot_predicted_wf_phases(dpp_config, dpp_data, dpp_model)
 
-(3.3) Plotting continuous waveform with predicted P and S phases, and corresponding predicted probability time series.
+Three additional optional arguments allow to modify the plots content.
+The argument `plot_comps` (by default is ['Z','E']) defines which seismogram components are plotted.
+The argument `plot_probs` (by default is [], so no time series are shown) the probability time series of which classes are plotted.
+Finally, the argument `shift_probs` (by default is True) controlls if the plotted probability time series are shifted in time,
+according to the optimized hyperparamter values defining the picking window for each class.
 
-Two type of output plots can be generated.
-The function **plot_predicted_wf_phases** creates plots including predicted phase onsets on seismic waveforms.
-The function **plot_predicted_wf_phases_prob** additionally includes predicted probability time series.
-The function **plotly_predicted_wf_phases** (requires the installation of the library plotly), creates interactive plots of the predicted phase onsets
-on seismic waveforms and predicted probability time series, where predicted picks can be visualized in more detailed.
-In all the above plots, the phase onsets shown are the refined picks.
-Moreover, the user-defined parameter **dct\_out['plot_comps']** controls which seismogram components are plotted.
 
 ## Citation:
 
