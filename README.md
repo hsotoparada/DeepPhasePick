@@ -33,13 +33,7 @@ To set the parameters selecting the waveform data on which DeepPhasePick is appl
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
 
-    dpp_config.set_data(
-        stas=['PB01', 'PB02'],
-        net='CX',
-        ch='HH',
-        archive='data',
-        opath='out'
-    )
+    dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
 
 To set the parameters defining how seismic waveforms is processed before phase detection, use:
 
@@ -47,12 +41,7 @@ To set the parameters defining how seismic waveforms is processed before phase d
 
 For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not already the data sampling rate) before running the detection:
 
-    dpp_config.set_data_params(
-        samp_freq=100.,
-        st_filter=True,
-        filter_type='highpass',
-        filter_fmin=.2
-    )
+    dpp_config.set_data_params(samp_freq=100., st_filter=True, filter_type='highpass', filter_fmin=.2)
 
 DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using:
 
@@ -84,15 +73,7 @@ Please refer to the Text S1 in the above-mentioned Supplementary Material to see
 
 Then refined pick onsets and their time uncertainties will be computed by applying 20 iterations of Monte Carlo Dropout.
 
-    dpp_config.set_picking(
-        op_conds=['1','2','3','4'],
-        dt_ps_max=25.,
-        dt_sdup_max=2.,
-        dt_sp_near=1.5,
-        tp_th_add=1.5,
-        run_mcd=True
-        mcd_iter=20,
-    )
+    dpp_config.set_picking(op_conds=['1','2','3','4'], dt_ps_max=25., dt_sdup_max=2., dt_sp_near=1.5, tp_th_add=1.5, run_mcd=True, mcd_iter=20)
 
 More details on the arguments accepted by each of these configuration functions can be seen from the corresponding function documentation.
 
