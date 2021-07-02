@@ -26,24 +26,22 @@ Before running DPP, the method needs to be configured by creating an instance of
 
 Then, parameters controlling different stages in the method can be configured as described below.
 
-To set the parameters selecting the waveform data on which DeepPhasePick is applied, use `dpp_config.set_data()`.
+To set the parameters selecting the waveform data on which DeepPhasePick is applied,
+use `dpp_config.set_data()`.
 
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
 
     dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
 
-To set the parameters defining how seismic waveforms is processed before phase detection, use:
-
-    dpp_config.set_data_params()
+To set the parameters defining how seismic waveforms is processed before phase detection,
+use `dpp_config.set_data_params()`.
 
 For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not already the data sampling rate) before running the detection:
 
     dpp_config.set_data_params(samp_freq=100., st_filter=True, filter_type='highpass', filter_fmin=.2)
 
-DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using:
-
-    dpp_config.set_time()
+DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using `dpp_config.set_time()`.
 
 For example, to create 30-min (1800-seconds) time windows in the period between
 `2015-04-03T00:00:00` and `2015-04-03T02:00:00` (2 hours), use:
@@ -53,17 +51,15 @@ For example, to create 30-min (1800-seconds) time windows in the period between
 Note that the windows will have the same duration except for the last window, which will be filled with the remainder data until `tend` in case
 `dt_iter + tstart(last window) > tend`.
 
-To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms, use:
-
-    dpp_config.set_trigger()
+To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms,
+use `dpp_config.set_trigger()`.
 
 For example, the following will compute the discrete probability time series in phase detection every 20 samples, using a probability threshold of 0.95 for P- and S-phases:
 
     dpp_config.set_trigger(n_shift=20, pthres_p=[0.95, 0.001], pthres_s=[0.95, 0.001])
 
-To set the parameters applied in optional conditions for refining preliminary picks obtained from phase detection, use:
-
-    dpp_config.set_picking()
+To set the parameters applied in optional conditions for refining preliminary picks obtained from phase detection,
+use `dpp_config.set_picking()`.
 
 For example, the following will remove preliminary picks which are presumed false positive, by applying all of the four optional conditions described in the
 Supplementary Material of Soto and Schurr (2021). This is the default and recommended option, especially when dealing with very noise waveforms.
