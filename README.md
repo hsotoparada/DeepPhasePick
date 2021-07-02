@@ -26,9 +26,7 @@ Before running DPP, the method needs to be configured by creating an instance of
 
 Then, parameters controlling different stages in the method can be configured as described below.
 
-To set the parameters selecting the waveform data on which DeepPhasePick is applied, use:
-
-    dpp_config.set_data()
+To set the parameters selecting the waveform data on which DeepPhasePick is applied, use `dpp_config.set_data()`.
 
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
