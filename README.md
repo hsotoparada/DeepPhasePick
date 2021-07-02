@@ -178,10 +178,11 @@ To plot the continuous waveforms together with the predicted P and S phases, use
     util.plot_predicted_wf_phases(dpp_config, dpp_data, dpp_model)
 
 Three additional optional arguments allow to modify the plots content.
-The argument `plot_comps` (by default is ['Z','E']) defines which seismogram components are plotted.
-The argument `plot_probs` (by default is [], so no time series are shown) the probability time series of which classes are plotted.
-Finally, the argument `shift_probs` (by default is True) controlls if the plotted probability time series are shifted in time,
+The argument `plot_comps` defines which seismogram components are plotted.
+The argument `plot_probs` defines the probability time series of which classes are plotted.
+Finally, the argument `shift_probs` controlls if the plotted probability time series are shifted in time,
 according to the optimized hyperparamter values defining the picking window for each class.
+Please see more details about all the arguments in the function documentation.
 
 
 ## Citation:
