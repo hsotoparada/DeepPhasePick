@@ -93,7 +93,7 @@ The local archive needs to have the following commonly used structure:
 **archive/YY/NET/STA/CH**
 
 Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HHZ.D) corresponding to the seismic streams.
-Example data is included in the **archive** directory, where new data, on which DeepPhasePick will be applied, can be added by users.
+An example of archive data is included in `sample_data/archive`.
 
 Alternatively, waveforms can be read from a local directory with no specific structure. For example using:
 
@@ -145,17 +145,17 @@ Next the phase picking can be run to refine the preliminary picks, using:
 The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots`.
 These figures are similar to the subplots in Figure 3 (Soto, H., & Schurr, B., 2021).
 
+The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
+
 The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to the file `opath/*/pick_stats/pick_stats`.
 If `run_mcd=False`, the file will contain the following 4 columns:
 
 `station, phase (P or S), pick number, detection probability, tons (preliminary; UTC)`
 
-If `run_mcd=True`, the file will contain the previous columns and following additional columns with the results from the MCD iterations:
+If `run_mcd=True`, the file will contain the previous columns plus the following additional columns with the results from the MCD iterations:
 
 `tons (refined; UTC), tons (preliminary; within picking window), tons (refined; within picking window),
 tons_err (before onset), tons_err (after onset), pick class, pb, pb_std`
-
-The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
 
 
 ### 4. Plotting predicted P and S phases
