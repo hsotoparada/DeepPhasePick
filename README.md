@@ -62,7 +62,9 @@ To set the parameters applied in optional conditions for refining preliminary pi
 use `dpp_config.set_picking()`.
 
 For example, the following will remove preliminary picks which are presumed false positive, by applying all of the four optional conditions described in the
-Supplementary Material of Soto and Schurr (2021). This is the default and recommended option, especially when dealing with very noise waveforms.
+Supplementary Material of Soto and Schurr (2021).
+This is the default and recommended option, especially when many presumed false positives may be observed when dealing with very noise waveforms or
+preprocessing seismic waveforms with different filters.
 Please refer to the Text S1 in the above-mentioned Supplementary Material to see how the different user-defined parameters are used to remove preliminary picks.
 
 Then refined pick onsets and their time uncertainties will be computed by applying 20 iterations of Monte Carlo Dropout.
@@ -90,7 +92,7 @@ The local archive needs to have the following commonly used structure:
 
 **archive/YY/NET/STA/CH**
 
-Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HH) of the seismic streams.
+Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HHZ.D) corresponding to the seismic streams.
 Example data is included in the **archive** directory, where new data, on which DeepPhasePick will be applied, can be added by users.
 
 Alternatively, waveforms can be read from a local directory with no specific structure. For example using:
@@ -107,17 +109,17 @@ In order to run the phase detection and picking stages, an instance of the class
 This reads the optimized trained models into DPP.
 By default, the trained model weights and other relevant model information obtained from the hyperparameter optimization are read from the following directories:
 
-**detection/20201002**, which contains the files related to the optimized phase detection model,
+**models/detection/20201002**, which contains the files related to the optimized phase detection model,
 
-**picking/20201002/P**, which contains the files related to the optimized P-phase picking model, and
+**models/picking/20201002/P**, which contains the files related to the optimized P-phase picking model, and
 
-**picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
+**models/picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
 
-Here `20201002` is a string indicating the version of each model, defined by the optional arguments `version_det`, `version_pick_P`, `version_pick_S`
+Here `20201002` is a string indicating the version of each model, defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
 that can be passed to Model().
-This allows that new trained models, which will be added in the future, can be accessed by using their corresponding versions.
+This allows the integration of new trained models in the future, which can be accessed by through their corresponding versions.
 
-See the class documentation for details on other optional arguments.
+See the class documentation for details on other optional parameters.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
 
@@ -131,19 +133,37 @@ Then, to run the phase detection on the selected seismic waveforms, use:
 
 This will compute discrete class probability time series from predictions, which are used to obtain preliminary phase picks.
 
-Use the optional argument `save_dets = True` (by default is `False`) to save a dictionary containing the class probabilities and preliminary picks for further use.
+The optional parameter `save_dets = True` (default is `False`) will save a dictionary containing the class probabilities and preliminary picks to `opath/*/pick_stats` for further use.
+Here `opath` is the output directory defined defined in the DPP configuration.
 
-Use the optional argument `save_data = True` (by default is `False`) to save a dictionary containing the seismic waveform data used for phase detection if needed.
+The optional parameter `save_data = True` (default is `False`) will save a dictionary containing the seismic waveform data used for phase detection to the same directory if needed.
 
 Next the phase picking can be run to refine the preliminary picks, using:
 
     dpp_model.run_picking(dpp_config, dpp_data)
 
-Use the optional argument `save_plots = True` (by default is `True`) to create figures of individual predicted phase onsets.
+The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots`.
+These figures are as the subplots in Figure 3 (Soto, H., & Schurr, B., 2020).
 
-Use the optional argument `save_stats = True` (by default is `True`) to save statistics of predicted phase onsets.
+The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to a file `opath/*/pick_stats/pick_stats`.
+If `run_mcd=False`, the file will contain the following 4 columns:
+`station, phase (P or S), pick number, detection probability, tons (preliminary; UTC)`
+If `run_mcd=True`, the file will contain the previous columns and following additional columns with the results from the MCD iterations:
+`tons (refined; UTC), tons (preliminary; within picking window), tons (refined; within picking window),
+tons_err (before onset), tons_err (after onset), pick class, pb, pb_std`
 
-Use the optional argument `save_picks = True` (by default is `False`) to save a dictionary containing relevant information on preliminary and refined phase picks.
+                <!--  -->
+                <!--     outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}" -->
+                <!--     ofile.write(outstr + '\n') -->
+                <!-- else: -->
+                <!--     pick_pb = dct_picks[sta]['P']['twd'][k]['pb_win'] -->
+                <!--     tpick_det = dct_picks[sta]['P']['twd'][k]['pick_ml_det'] -->
+                <!--     tstart_win = dct_picks[sta]['P']['twd'][k]['tstart_win'] -->
+                <!--     tpick_det_abs = tstart_win + tpick_det -->
+                <!--     # -->
+                <!--     outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs}" -->
+
+The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
 
 
 ### 4. Plotting predicted P and S phases
@@ -152,10 +172,10 @@ To plot the continuous waveforms together with the predicted P and S phases, use
 
     util.plot_predicted_wf_phases(dpp_config, dpp_data, dpp_model)
 
-Three additional optional arguments allow to modify the plots content.
-The argument `plot_comps` defines which seismogram components are plotted.
-The argument `plot_probs` defines the probability time series of which classes are plotted.
-Finally, the argument `shift_probs` controlls if the plotted probability time series are shifted in time,
+Three additional optional function parameters allow to modify the plots content.
+The parameter `plot_comps` defines which seismogram components are plotted.
+The parameter `plot_probs` defines the probability time series of which classes are plotted.
+Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
 according to the optimized hyperparamter values defining the picking window for each class.
 
 For example, the following will plot the predicted picks, the vertical ('Z') and north ('N') seismogram components,
@@ -163,7 +183,7 @@ and the probability time series for P- and S-phase classes shifted in time as de
 
     util.plot_predicted_wf_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
 
-Please check a more detailed information about all the arguments in the documentation for this function.
+Please check a more detailed information about all the allowed parameters in the documentation for this function.
 
 
 ## Citation:
@@ -173,7 +193,7 @@ If you use this algorithm for research purpose, please cite it as follows:
 - Soto, H., & Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
 optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint: https://eartharxiv.org/repository/view/1752/.
 
-Please let me know of any bugs found in the code...
+Please let me know of any bugs found in the code.
 
 
 ## Thanks:
