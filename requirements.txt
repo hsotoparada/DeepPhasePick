@@ -1,0 +1,9 @@
+python>=3.6
+tensorflow==2.0.0
+keras==2.4.3
+obspy==1.2.2
+numpy
+matplotlib
+pylab
+pandas
+tqdm
