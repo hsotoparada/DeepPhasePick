@@ -115,9 +115,9 @@ By default, the trained model weights and other relevant model information obtai
 
 **models/picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
 
-Here `20201002` is a string indicating the version of each model, defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
+The string `20201002` indicates the version of each model, defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
 that can be passed to Model().
-This allows the integration of new trained models in the future, which can be accessed by through their corresponding versions.
+This allows the integration of new versions of trained models in the future, which can be used as an alternative.
 
 See the class documentation for details on other optional parameters.
 
@@ -133,35 +133,27 @@ Then, to run the phase detection on the selected seismic waveforms, use:
 
 This will compute discrete class probability time series from predictions, which are used to obtain preliminary phase picks.
 
-The optional parameter `save_dets = True` (default is `False`) will save a dictionary containing the class probabilities and preliminary picks to `opath/*/pick_stats` for further use.
-Here `opath` is the output directory defined defined in the DPP configuration.
+The optional parameter `save_dets = True` (default is `False`) will save a dictionary containing the class probabilities and preliminary picks to `opath/*/pick_stats` if needed for further use.
+Here `opath` is the output directory defined in the DPP configuration (see function `set_data()`).
 
-The optional parameter `save_data = True` (default is `False`) will save a dictionary containing the seismic waveform data used for phase detection to the same directory if needed.
+The optional parameter `save_data = True` (default is `False`) will save a dictionary containing the seismic waveform data used for phase detection to the same directory.
 
 Next the phase picking can be run to refine the preliminary picks, using:
 
     dpp_model.run_picking(dpp_config, dpp_data)
 
 The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots`.
-These figures are as the subplots in Figure 3 (Soto, H., & Schurr, B., 2020).
+These figures are similar to the subplots in Figure 3 (Soto, H., & Schurr, B., 2021).
 
-The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to a file `opath/*/pick_stats/pick_stats`.
+The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to the file `opath/*/pick_stats/pick_stats`.
 If `run_mcd=False`, the file will contain the following 4 columns:
+
 `station, phase (P or S), pick number, detection probability, tons (preliminary; UTC)`
+
 If `run_mcd=True`, the file will contain the previous columns and following additional columns with the results from the MCD iterations:
+
 `tons (refined; UTC), tons (preliminary; within picking window), tons (refined; within picking window),
 tons_err (before onset), tons_err (after onset), pick class, pb, pb_std`
-
-                <!--  -->
-                <!--     outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}" -->
-                <!--     ofile.write(outstr + '\n') -->
-                <!-- else: -->
-                <!--     pick_pb = dct_picks[sta]['P']['twd'][k]['pb_win'] -->
-                <!--     tpick_det = dct_picks[sta]['P']['twd'][k]['pick_ml_det'] -->
-                <!--     tstart_win = dct_picks[sta]['P']['twd'][k]['tstart_win'] -->
-                <!--     tpick_det_abs = tstart_win + tpick_det -->
-                <!--     # -->
-                <!--     outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs}" -->
 
 The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
 
