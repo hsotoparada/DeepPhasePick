@@ -10,8 +10,8 @@ Contact: soto@gfz-potsdam.de, hugosotoparada@gmail.com
 
 import numpy as np
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import pylab as plt
 import tensorflow as tf
 import re, sys, os, shutil, gc
 import pickle
@@ -546,9 +546,8 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                 tr = data.data[i]['st'][sta].select(channel='*'+ch)[0]
                 dt = tr.stats.delta
                 tr_y = tr.data
-                if config.data_params['st_normalized']:
-                    y_max = np.abs(tr.data).max()
-                    tr_y /= y_max
+                y_max = np.abs(tr.data).max()
+                tr_y /= y_max
                 tr_x = np.arange(tr.data.size) * dt
                 # print(tr_y.min(), tr_y.max(), y_max)
                 #

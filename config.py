@@ -55,21 +55,12 @@ class Config():
             dictionary with defined parameters. See parameters details in method set_data().
         """
 
-        # TODO: define for sample data
         dct = {
             'stas': [],
             'ch': 'HH',
             'net': '',
-            'archive': '',
+            'archive': 'archive',
             'opath': 'out',
-            # #
-            # # 'stas': ['AB03', 'AB05', 'AB10', 'AB12', 'AB17', 'AB21', 'AB22', 'AB24', 'AB25', 'AB27'],
-            # 'stas': ['AB10', 'AB21', 'AB25'],
-            # # 'stas': ['AB10', 'AB21'],
-            # 'ch': 'HH',
-            # 'net': '9K',
-            # # 'archive': 'archive',
-            # 'archive': '/home/soto/Volumes/CHILE/soto_work/HART_ALBANIA/archive',
         }
 
         if dct_data is not None:
@@ -92,12 +83,10 @@ class Config():
 
         dct = {
             'samp_freq': 100.,
-            'st_normalized': True,
             'st_detrend': True,
-            'st_filter': False,
-            'filter_type': 'bandpass',
-            'filter_fmin': .2,
-            'filter_fmax': 10.,
+            'st_resample': True,
+            'st_filter': None,
+            'filter_opts': {},
         }
 
         if dct_data_params is not None:
@@ -118,35 +107,10 @@ class Config():
             dictionary with defined parameters. See parameters details in method set_time().
         """
 
-        # TODO: define for sample data
         dct = {
-            #
-            'dt_iter': 3600. * 1,
-            'tstart': oc.UTCDateTime(2020, 1, 11, 21, 0, 0),
-            'tend': oc.UTCDateTime(2020, 1, 11, 22, 0, 0),
-            # 'tstarts': [
-            #     oc.UTCDateTime(2020, 2, 16, 12, 0, 0)
-            #     ],
-            # 'tends': [
-            #     oc.UTCDateTime(2020, 2, 17, 0, 0, 0)
-            #     ],
-            #
-            # 'STEAD': {
-            #     'dt_iter': 3600. * 1,
-            #     'tstarts': [0],
-            #     'tends': [0],
-            # },
-            # #
-            # 'test_dpp_detection_1': {
-            #     'dt_iter': 3600. * 1,
-            #     'tstarts': [0],
-            #     'tends': [0],
-            # },
-            # 'test_dpp_picking_1': {
-            #     'dt_iter': 3600. * 1,
-            #     'tstarts': [0],
-            #     'tends': [0],
-            # },
+            'dt_iter': 3600.,
+            'tstart': oc.UTCDateTime(0),
+            'tend': oc.UTCDateTime(3600),
         }
 
         if dct_time is not None:
@@ -171,11 +135,7 @@ class Config():
         """
 
         dct = {
-            # 'n_shift': 10, 'pthres_p': [0.5, .001], 'pthres_s': [0.5, .001], 'max_trig_len': [9e99, 9e99],
             'n_shift': 10, 'pthres_p': [0.9, .001], 'pthres_s': [0.9, .001], 'max_trig_len': [9e99, 9e99],
-            # 'n_shift': 10, 'pthres_p': [0.95, .001], 'pthres_s': [0.95, .001], 'max_trig_len': [9e99, 9e99],
-            # 'n_shift': 10, 'pthres_p': [0.98, .001], 'pthres_s': [0.95, .001], 'max_trig_len': [9e99, 9e99],
-            # 'n_shift': 10, 'pthres_p': [0.98, .001], 'pthres_s': [0.98, .001], 'max_trig_len': [9e99, 9e99],
         }
 
         if dct_trigger is not None:
@@ -197,21 +157,13 @@ class Config():
         """
 
         dct = {
-            # 'op_conds': ['1', '2', '3', '4'],
-            'op_conds': [],
-            #
+            'op_conds': ['1', '2', '3', '4'],
             'tp_th_add': 1.5,
             'dt_sp_near': 3.,
             'dt_ps_max': 35.,
             'dt_sdup_max': 3.,
             #
-            # 'tp_th_add': 1.5,
-            # 'dt_sp_near': 1.5,
-            # 'dt_ps_max': 25.,
-            # 'dt_sdup_max': 2.,
-            #
             'run_mcd': True,
-            # 'mcd_iter': 5,
             'mcd_iter': 10,
         }
 
@@ -249,40 +201,33 @@ class Config():
         }
 
 
-    # TODO: remove st_normalize, maybe it's better to normalize the data by default, as models were trained with normalized data
-    # TODO: maybe define st_filter as an instance of obspy.filter ?? To make it more general and flexible
-    def set_data_params(self, samp_freq=100., st_normalized=True, st_detrend=True, st_filter=False, filter_type='bandpass', filter_fmin=.2, filter_fmax=10.):
+    def set_data_params(self, samp_freq=100., st_detrend=True, st_resample=True, st_filter=None, filter_opts={}):
         """
         Set parameters defining how seismic waveforms is processed before phase detection.
 
         Parameters
         ----------
         samp_freq: float, optional
-            sampling rate [Hz] of the seismic waveforms. Waveforms with different sampling rate should be resampled to samp_freq.
-        st_normalized: bool, optional
-            If True, normalize waveforms on which phase detection is performed.
+            sampling rate [Hz] at which the seismic waveforms will be resampled.
         st_detrend: bool, optional
             If True, detrend (linear) waveforms on which phase detection is performed.
-        st_filter: bool, optional
-            If True, filter waveforms on which phase detection is performed.
-        filter_type: str, optional
-            type of filter applied to waveforms on which phase detection is performed.
+        st_resample: bool, optional
+            If True, resample waveforms on which phase detection is performed at samp_freq.
+        st_filter: str, optional
+            type of filter applied to waveforms on which phase detection is performed. If None, no filter is applied.
             See obspy.core.stream.Stream.filter.
-        filter_fmin: float, optional
-            Minimum frequency of applied filter. Data below this frequency is removed.
-        filter_fmax: float, optional
-            Maximum frequency of applied filter. Data above this frequency is removed.
+        filter_opts: dict, optional
+            Necessary keyword arguments for the respective filter that will be passed on. (e.g. freqmin=1.0, freqmax=20.0 for filter_type="bandpass")
+            See obspy.core.stream.Stream.filter.
 
         """
 
         self.data_params = {
             'samp_freq': samp_freq,
-            'st_normalized': st_normalized,
             'st_detrend': st_detrend,
+            'st_resample': st_resample,
             'st_filter': st_filter,
-            'filter_type': filter_type,
-            'filter_fmin': filter_fmin,
-            'filter_fmax': filter_fmax,
+            'filter_opts': filter_opts,
         }
 
 

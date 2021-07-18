@@ -142,7 +142,6 @@ class Data():
                 # del st
                 #
                 if config.data_params['st_detrend']:
-                # if dct_param['st_detrend']:
                     #
                     print('detrend...')
                     try:
@@ -178,28 +177,37 @@ class Data():
                                 st.remove(tr)
                         st.detrend(type='linear')
                 #
-                if config.data_params['st_filter']:
+                if config.data_params['st_filter'] is not None:
                     #
                     print('filter...')
-                    if config.data_params['filter_type'] == 'bandpass':
-                        st.filter(type=config.data_params['filter_type'], freqmin=config.data_params['filter_fmin'], freqmax=config.data_params['filter_fmax'])
-                    elif config.data_params['filter_type'] == 'highpass':
-                        st.filter(type=config.data_params['filter_type'], freq=config.data_params['filter_fmin'])
+                    st.filter(type=config.data_params['st_filter'], **config.data_params['filter_opts'])
                 #
-                print('resampling...')
-                for tr in st:
-                    if tr.stats.sampling_rate < config.data_params['samp_freq']:
-                        outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
-                        print(outstr)
-                        tr.resample(config.data_params['samp_freq'])
+                if config.data_params['st_resample']:
                     #
-                    # TODO: add exception to handle case where data samp rate > samp_freq but an integer multiple
-                    # TODO: make this condition more general, working for all integer multiples of samp_freq
-                    # conditions for cases with sampling rate higher than samp_freq and different than 200 Hz should be included here
-                    if tr.stats.sampling_rate == 200.:
-                        outstr = f"{tr} --> decimating from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
-                        print(outstr)
-                        tr.decimate(2)
+                    print('resampling...')
+                    for tr in st:
+                        #
+                        if tr.stats.sampling_rate == config.data_params['samp_freq']:
+                            outstr = f"{tr} --> skipped, already sampled at {tr.stats.sampling_rate} Hz"
+                            print(outstr)
+                            pass
+                        #
+                        if tr.stats.sampling_rate < config.data_params['samp_freq']:
+                            outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
+                            print(outstr)
+                            tr.resample(config.data_params['samp_freq'])
+                        #
+                        if tr.stats.sampling_rate > config.data_params['samp_freq']:
+                            #
+                            if int(tr.stats.sampling_rate % config.data_params['samp_freq']) == 0:
+                                decim_factor = int(tr.stats.sampling_rate / config.data_params['samp_freq'])
+                                outstr = f"{tr} --> decimating from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
+                                print(outstr)
+                                tr.decimate(decim_factor)
+                            else:
+                                outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz !!"
+                                print(outstr)
+                                tr.resample(config.data_params['samp_freq'])
                 #
                 print('merging...')
                 try:
@@ -330,28 +338,37 @@ class Data():
                         st.remove(tr)
                 st.detrend(type='linear')
         #
-        if config.data_params['st_filter']:
+        if config.data_params['st_filter'] is not None:
             #
             print('filter...')
-            if config.data_params['filter_type'] == 'bandpass':
-                st.filter(type=config.data_params['filter_type'], freqmin=config.data_params['filter_fmin'], freqmax=config.data_params['filter_fmax'])
-            elif config.data_params['filter_type'] == 'highpass':
-                st.filter(type=config.data_params['filter_type'], freq=config.data_params['filter_fmin'])
+            st.filter(type=config.data_params['st_filter'], **config.data_params['filter_opts'])
         #
-        print('resampling...')
-        for tr in st:
-            if tr.stats.sampling_rate < config.data_params['samp_freq']:
-                outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
-                print(outstr)
-                tr.resample(config.data_params['samp_freq'])
+        if config.data_params['st_resample']:
             #
-            # TODO: add exception to handle case where data samp rate > samp_freq but an integer multiple
-            # TODO: make this condition more general, working for all integer multiples of samp_freq
-            # conditions for cases with sampling rate higher than samp_freq and different than 200 Hz should be included here
-            if tr.stats.sampling_rate == 200.:
-                outstr = f"{tr} --> decimating from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
-                print(outstr)
-                tr.decimate(2)
+            print('resampling...')
+            for tr in st:
+                #
+                if tr.stats.sampling_rate == config.data_params['samp_freq']:
+                    outstr = f"{tr} --> skipped, already sampled at {tr.stats.sampling_rate} Hz"
+                    print(outstr)
+                    pass
+                #
+                if tr.stats.sampling_rate < config.data_params['samp_freq']:
+                    outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
+                    print(outstr)
+                    tr.resample(config.data_params['samp_freq'])
+                #
+                if tr.stats.sampling_rate > config.data_params['samp_freq']:
+                    #
+                    if int(tr.stats.sampling_rate % config.data_params['samp_freq']) == 0:
+                        decim_factor = int(tr.stats.sampling_rate / config.data_params['samp_freq'])
+                        outstr = f"{tr} --> decimating from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz"
+                        print(outstr)
+                        tr.decimate(decim_factor)
+                    else:
+                        outstr = f"{tr} --> resampling from {tr.stats.sampling_rate} to {config.data_params['samp_freq']} Hz !!"
+                        print(outstr)
+                        tr.resample(config.data_params['samp_freq'])
         #
         print('merging...')
         try:
@@ -398,10 +415,6 @@ class Data():
             twin_str += f"_{tend_iter.year}{tend_iter.month:02}{tend_iter.day:02}"
             twin_str += f"T{(tend_iter).hour:02}{(tend_iter).minute:02}{(tend_iter).second:02}"
             #
-            # twin_str = f"{tstart_iter.year}{tstart_iter.month:02}{tstart_iter.day:02}"
-            # twin_str += f"T{tstart_iter.hour:02}{tstart_iter.minute:02}{tstart_iter.second:02}"
-            # # twin_str += f"_{(tend_iter-1.).hour:02}{(tend_iter-1.).minute:02}{(tend_iter-1.).second:02}"
-            # twin_str += f"_{(tend_iter).hour:02}{(tend_iter).minute:02}{(tend_iter).second:02}"
             opath = f"{config.data['opath']}/{twin_str}"
             yy = tstart_iter.year
             doy = '%03d' % (tstart_iter.julday)

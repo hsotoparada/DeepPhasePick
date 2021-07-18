@@ -48,8 +48,8 @@ class Model():
     def __init__(
         self,
         version_det="20201002",
-        version_pick_P="20201002",
-        version_pick_S="20201002",
+        version_pick_P="20201002_1",
+        version_pick_S="20201002_1",
         ntrials_det=1000,
         ntrials_P=50,
         ntrials_S=50,
@@ -284,14 +284,10 @@ class Model():
             st_trim_flag = True
             st.trim(tstart_arr.max(), tend_arr.min())
         #
-        # Reshaping data matrix for sliding window
-        # print("Reshaping data matrix for sliding window")
+        # Preparing data matrix for sliding window
+        # print("Preparing data matrix for sliding window")
         #
         st_data = [st[0].data, st[1].data, st[2].data]
-        if config.data_params['st_normalized']:
-            data_max = np.array([np.abs(tr.data).max() for tr in st]).max()
-            for i, tr_data in enumerate(st_data):
-                tr_data /= data_max
         #
         best_params = self.model_detection['best_params']
         best_model = self.model_detection['best_model']
@@ -445,7 +441,6 @@ class Model():
                 #
                 # get preliminary phase picks
                 #
-                os.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 p_picks, s_picks, p_trigs, s_trigs = self._calculate_trigger(config, st_tmp, net, s, tt, ts, prob_P, prob_S)
                 print(f"p_picks = {len(p_picks)}, s_picks = {len(s_picks)}")
                 #
@@ -459,9 +454,10 @@ class Model():
                     data.data[i]['st'][s] = st_trimmed
             #
             if save_dets:
+                os.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 util.export_dict2pckl(self.detections[i], f"{opath}/pick_stats/detections.pckl")
             if save_data:
-                # os.makedirs(f"{opath}/data", exist_ok=True)
+                os.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 util.export_dict2pckl(data.data[i], f"{opath}/pick_stats/data.pckl")
 
 
@@ -868,6 +864,7 @@ class Model():
         #
         stas = list(dct_data['st'].keys())
         opath = dct_dets[stas[0]]['opath']
+        os.makedirs(f"{opath}/pick_stats", exist_ok=True)
         ofile = open(f"{opath}/pick_stats/pick_stats",'a')
         #
         for sta in dct_picks:
@@ -893,7 +890,7 @@ class Model():
                     mc_pred_mean_arg_pick = dct_picks[sta]['P']['twd'][k]['mc_ml']['mc_pred_mean_arg_pick']
                     pb = mc_pred_mean[mc_pred_mean_arg_pick, 0]
                     #
-                    outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}"
+                    outstr = f"{sta} P {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}"
                     ofile.write(outstr + '\n')
                 else:
                     pick_pb = dct_picks[sta]['P']['twd'][k]['pb_win']
@@ -901,7 +898,7 @@ class Model():
                     tstart_win = dct_picks[sta]['P']['twd'][k]['tstart_win']
                     tpick_det_abs = tstart_win + tpick_det
                     #
-                    outstr = f"{sta} 'P' {i+1} {pick_pb:.5f} {tpick_det_abs}"
+                    outstr = f"{sta} P {i+1} {pick_pb:.5f} {tpick_det_abs}"
                     ofile.write(outstr + '\n')
             #
             for i, k in enumerate(dct_picks[sta]['S']['true_arg']):
@@ -925,7 +922,7 @@ class Model():
                     mc_pred_mean_arg_pick = dct_picks[sta]['S']['twd'][k]['mc_ml']['mc_pred_mean_arg_pick']
                     pb = mc_pred_mean[mc_pred_mean_arg_pick, 0]
                     #
-                    outstr = f"{sta} 'S' {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}"
+                    outstr = f"{sta} S {i+1} {pick_pb:.5f} {tpick_det_abs} {tpick_pred_abs} {tpick_det:.3f} {tpick_pred:.3f} {terr_pre:.5f} {terr_pos:.5f} {pick_class} {pb:.5f} {pb_std:.5f}"
                     ofile.write(outstr + '\n')
                 else:
                     pick_pb = dct_picks[sta]['S']['twd'][k]['pb_win']
@@ -934,7 +931,7 @@ class Model():
                     tstart_win = dct_picks[sta]['S']['twd'][k]['tstart_win']
                     tpick_det_abs = tstart_win + tpick_det
                     #
-                    outstr = f"{sta} 'S' {i+1} {pick_pb:.5f} {tpick_det_abs}"
+                    outstr = f"{sta} S {i+1} {pick_pb:.5f} {tpick_det_abs}"
                     ofile.write(outstr + '\n')
         #
         ofile.close()
@@ -1093,9 +1090,11 @@ class Model():
                             util.plot_predicted_phase_S(config, dct_mcd, data_S, sta, opath, ii)
             #
             if save_stats:
+                # s.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 self._save_pick_stats(config, self.picks[k], self.detections[k], data.data[k])
             #
             if save_picks:
+                os.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 util.export_dict2pckl(self.picks[k], f"{opath}/pick_stats/picks.pckl")
 
 
