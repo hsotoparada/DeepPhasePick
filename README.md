@@ -113,8 +113,9 @@ By default, the trained model weights and other relevant model information obtai
 The strings `20201002` and  `20201002_1` indicate the version of the models, which can be given by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
 that can be passed to `Model()`.
 <br> This allows the integration of new versions of trained models in the future, which can be used alternatively.
-<br><br> Note that a new version (`20201002_2`) of the P- and S-phase picking models is also available. These upgraded picking models were trained using 2x and 3x
-the number of shifted versions of the seismic records originally used in Soto and Schurr (2021). Hence enhancing the performance of the phase picking.
+<br><br> Note that a new version (`20201002_2`) of the picking models is also available.
+These upgraded picking models were trained using 2x (for P phase) and 3x (for P phase) the number of shifted versions of the seismic records originally used in Soto and Schurr (2021).
+Hence enhancing the performance of the phase picking.
 
 See the class `Model()` documentation for details on other allowed optional parameters.
 
