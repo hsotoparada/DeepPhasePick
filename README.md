@@ -147,7 +147,7 @@ These figures are similar to the subplots in Figure 3 (Soto and Schurr, 2021).
 The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
 
 The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to the output file `opath/*/pick_stats/pick_stats`.
-If `run_mcd=False`, the ouput file will contain the following 4 columns:
+<br> If `run_mcd=False`, the ouput file will contain the following 4 columns:
 
 `station, phase (P or S), pick number, detection probability, tons (preliminary; UTC)`
 
