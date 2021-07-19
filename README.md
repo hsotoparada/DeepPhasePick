@@ -26,15 +26,15 @@ Before running DPP, the method needs to be configured by creating an instance of
 
 Then, parameters controlling different stages in the method can be configured as described below.
 
-Parameters determining the selected waveform data on which DeepPhasePick is
-applied are defined using `dpp_config.set_data()`.
+**1.1 Parameters determining the selected waveform data on which DeepPhasePick is
+applied are defined using `dpp_config.set_data()`.**
 
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
 
     dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
 
-Parameters controlling how seismic waveforms are processed before phase detection stage are defined using `dpp_config.set_data_params()`.
+**1.2 Parameters controlling how seismic waveforms are processed before phase detection stage are defined using `dpp_config.set_data_params()`. **
 
 For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if data is not already sampled at that sampling rate) before running the detection:
 
@@ -168,8 +168,6 @@ The parameter `plot_comps` defines which seismogram components are plotted.
 The parameter `plot_probs` defines the probability time series for which classes are plotted.
 Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
 according to the optimized hyperparameter values defining the picking window for each class.
-
-In the output figures, ...colors
 
 For example, the following will plot the predicted picks (P phase in red, S phase in blue), the vertical ('Z') and north ('N') seismogram components,
 and the probability time series for P- and S-phase classes shifted in time as described above (right y-axis, in same colors as picks).
