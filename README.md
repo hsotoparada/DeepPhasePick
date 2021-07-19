@@ -141,8 +141,8 @@ Next the phase picking can be run to refine the preliminary picks, using:
 
     dpp_model.run_picking(dpp_config, dpp_data)
 
-The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots`.
-These figures are similar to the subplots in Figure 3 (Soto, H., & Schurr, B., 2021).
+The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots` if `run_mcd=True`.
+These figures are similar to the subplots in Figure 3 (Soto and Schurr, 2021).
 
 The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
 
