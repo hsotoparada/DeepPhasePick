@@ -81,7 +81,7 @@ To read the seismic waveforms into DPP an instance of the class Data() needs to 
 
     dpp_data = data.Data()
 
-Then, the data can be read into DPP from a local archive directory using:
+Then, the data can be read into DPP for example from a local archive directory using:
 
     dpp_data.read_from_archive(dpp_config)
 
@@ -106,17 +106,19 @@ In order to run the phase detection and picking stages, an instance of the class
 This reads the optimized trained models into DPP.
 By default, the trained model weights and other relevant model information obtained from the hyperparameter optimization are read from the following directories:
 
-**models/detection/20201002**, which contains the files related to the optimized phase detection model,
+**models/detection/20201002**, which contains files related to the optimized phase detection model described in Soto and Schurr (2021),
 
-**models/picking/20201002/P**, which contains the files related to the optimized P-phase picking model, and
+**models/picking/20201002_1/P**, which contains files related to the optimized P-phase picking model described in Soto and Schurr (2021), and
 
-**models/picking/20201002/S**, which contains the files related to the optimized S-phase picking model.
+**models/picking/20201002_1/S**, which contains files related to the optimized S-phase picking model described in Soto and Schurr (2021).
 
-The string `20201002` indicates the version of each model, defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
+The strings `20201002` and  `20201002_1` indicates the version of the models, which is defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
 that can be passed to Model().
-This allows the integration of new versions of trained models in the future, which can be used as an alternative.
+<br> This allows the integration of new versions of trained models in the future, which can be used as an alternative.
+<br> Note that a new version (`20201002_2`) of the P- and S-phase picking models is also available. These upgraded picking models were trained using 2x and 3x
+the number of shifted versions of the seismic records originally used in Soto and Schurr (2021). Hence enhancing the performance of the phase picking.
 
-See the class documentation for details on other optional parameters.
+See the class Model() documentation for details on other allowed optional parameters.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
 
@@ -124,7 +126,7 @@ Once the models are read into DPP, model information can be retrieved for exampl
     print(dpp_model.model_picking_P['best_model'].summary())
     print(dpp_model.model_picking_S['best_model'].summary())
 
-Then, to run the phase detection on the selected seismic waveforms, use:
+Then, to run the phase detection on the selected seismic waveforms use:
 
     dpp_model.run_detection(dpp_config, dpp_data)
 
