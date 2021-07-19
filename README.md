@@ -164,25 +164,25 @@ Figures including continuous waveforms together with predicted P and S phases ca
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
 
-Three additional optional parameters in this function allow to modify the plots content.
+Three additional optional parameters in this function allow to modify the figures content.
 The parameter `plot_comps` defines which seismogram components are plotted.
 The parameter `plot_probs` defines the probability time series for which classes are plotted.
 Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
 according to the optimized hyperparameter values defining the picking window for each class.
 
 For example, the following will plot the predicted picks (P phase in red, S phase in blue), the vertical ('Z') and north ('N') seismogram components,
-and the probability time series for P- and S-phase classes shifted in time as described above (right y-axis, in same colors as picks).
+and the probability time series for P- and S-phase classes shifted in time as described above (in same colors as corresponding picks).
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
 
-Please check a more detailed information about all the allowed parameters in the documentation or this function.
+More detailed information about the allowed parameters can be seen from the documentation of this function.
 
 
 ## Citation:
 
 If you use this algorithm for research purpose, please cite it as follows:
 
-- Soto, H., & Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
+- Soto, H., and Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
 optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint: https://eartharxiv.org/repository/view/1752/.
 
 Please let me know of any bugs found in the code.
