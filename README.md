@@ -26,20 +26,21 @@ Before running DPP, the method needs to be configured by creating an instance of
 
 Then, parameters controlling different stages in the method can be configured as described below.
 
-To set the parameters selecting the waveform data on which DeepPhasePick is applied,
-use `dpp_config.set_data()`.
+Parameters determining the selected waveform data on which DeepPhasePick is
+applied are defined using `dpp_config.set_data()`.
 
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
 the archive directory `data`, and save the results in directory `out`, run:
 
     dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
 
-To set the parameters defining how seismic waveforms is processed before phase detection,
-use `dpp_config.set_data_params()`.
+Parameters controlling how seismic waveforms are processed before phase detection stage are defined using `dpp_config.set_data_params()`.
 
-For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if that is not already the data sampling rate) before running the detection:
+For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if data is not already sampled at that sampling rate) before running the detection:
 
-    dpp_config.set_data_params(samp_freq=100., st_filter=True, filter_type='highpass', filter_fmin=.2)
+    dpp_config.set_data_params(samp_freq=100., st_filter='highpass', filter_opts={'freq': .5})
+
+Note that, since the models in DPP were trained using non-filtered data, this may cause numerous false positive predictions.
 
 DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using `dpp_config.set_time()`.
 
@@ -48,28 +49,24 @@ For example, to create 30-min (1800-seconds) time windows in the period between
 
     dpp_config.set_time(dt_iter=1800., tstart="2015-04-03T00:00:00", tend="2015-04-03T02:00:00")
 
-Note that the windows will have the same duration except for the last window, which will be filled with the remainder data until `tend` in case
+Note that the windows created will have the same duration except for the last window, which will be filled with the remainder data until `tend` in case
 `dt_iter + tstart(last window) > tend`.
 
-To set the parameters defining how predicted discrete probability time series are computed when running phase detection on seismic waveforms,
-use `dpp_config.set_trigger()`.
+Parameters determining how predicted discrete probability time series are computed when running phase detection on seismic waveforms are defined using `dpp_config.set_trigger()`.
 
-For example, the following will compute the discrete probability time series in phase detection every 20 samples, using a probability threshold of 0.95 for P- and S-phases:
+For example, the following will compute the discrete probability time series every 20 samples, using a probability threshold of 0.95 for P- and S-phases:
 
     dpp_config.set_trigger(n_shift=20, pthres_p=[0.95, 0.001], pthres_s=[0.95, 0.001])
 
-To set the parameters applied in optional conditions for refining preliminary picks obtained from phase detection,
-use `dpp_config.set_picking()`.
+Parameters controlling the optional conditions applied for refining preliminary picks obtained from phase detection are defined using `dpp_config.set_picking()`.
 
 For example, the following will remove preliminary picks which are presumed false positive, by applying all of the four optional conditions described in the
-Supplementary Material of Soto and Schurr (2021).
-This is the default and recommended option, especially when many presumed false positives may be observed when dealing with very noise waveforms or
-preprocessing seismic waveforms with different filters.
-Please refer to the Text S1 in the above-mentioned Supplementary Material to see how the different user-defined parameters are used to remove preliminary picks.
+Text S1 in the Supplementary Material of Soto and Schurr (2021).
+This is the default and recommended option, especially when dealing with very noise waveforms or filtered seismic waveforms, which may increase the number of presumed false positives.
 
 Then refined pick onsets and their time uncertainties will be computed by applying 20 iterations of Monte Carlo Dropout.
 
-    dpp_config.set_picking(op_conds=['1','2','3','4'], dt_ps_max=25., dt_sdup_max=2., dt_sp_near=1.5, tp_th_add=1.5, run_mcd=True, mcd_iter=20)
+    dpp_config.set_picking(run_mcd=True, mcd_iter=20)
 
 More details on the arguments accepted by each of these configuration functions can be seen from the corresponding function documentation.
 
