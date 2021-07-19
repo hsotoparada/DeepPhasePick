@@ -865,7 +865,7 @@ class Model():
         stas = list(dct_data['st'].keys())
         opath = dct_dets[stas[0]]['opath']
         os.makedirs(f"{opath}/pick_stats", exist_ok=True)
-        ofile = open(f"{opath}/pick_stats/pick_stats",'a')
+        ofile = open(f"{opath}/pick_stats/pick_stats",'w')
         #
         for sta in dct_picks:
             #

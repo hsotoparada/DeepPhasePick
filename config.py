@@ -159,9 +159,9 @@ class Config():
         dct = {
             'op_conds': ['1', '2', '3', '4'],
             'tp_th_add': 1.5,
-            'dt_sp_near': 3.,
+            'dt_sp_near': 2.,
             'dt_ps_max': 35.,
-            'dt_sdup_max': 3.,
+            'dt_sdup_max': 2.,
             #
             'run_mcd': True,
             'mcd_iter': 10,

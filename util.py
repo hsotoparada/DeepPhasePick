@@ -51,18 +51,8 @@ def init_session():
     Sets up tensorflow v2.x / keras session.
     """
     #
-    # This is to avoid error:
-    # UnknownError: Failed to get convolution algorithm. This is probably because cuDNN failed to initialize...
-    config = tf.compat.v1.ConfigProto()
-    # config = tf.ConfigProto()
-    #
-    # It allows any new GPU process which consumes a GPU memory to be run on the same machine.
-    # see: https://kobkrit.com/using-allow-growth-memory-option-in-tensorflow-and-keras-dc8c8081bc96
-    config.gpu_options.allow_growth = True
-    config.gpu_options.per_process_gpu_memory_fraction = 0.8
-    # tf.keras.backend.set_session(tf.Session(config=config))
-    session = tf.compat.v1.Session(config=config)
-    # session = tf.Session(config=config)
+    physical_devices = tf.config.list_physical_devices('GPU')
+    tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
     #
     # remove previously generated files or directories
     dirs_remove = ['__pycache__/', '~/.nv/']
