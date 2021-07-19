@@ -125,7 +125,7 @@ Once the models are read into DPP, model information can be retrieved for exampl
     print(dpp_model.model_picking_P['best_model'].summary())
     print(dpp_model.model_picking_S['best_model'].summary())
 
-Then, to run the phase detection on the selected seismic waveforms use:
+**3.1 Then, to run the phase detection on the selected seismic waveforms use:**
 
     dpp_model.run_detection(dpp_config, dpp_data)
 
@@ -136,7 +136,7 @@ Here `opath` is the output directory defined in the DPP configuration (see funct
 
 The optional parameter `save_data = True` (default is `False`) will save a dictionary containing the seismic waveform data used for phase detection to the same directory.
 
-Next the phase picking can be run to refine the preliminary picks, using:
+**3.2 Next the phase picking can be run to refine the preliminary picks, using:**
 
     dpp_model.run_picking(dpp_config, dpp_data)
 
