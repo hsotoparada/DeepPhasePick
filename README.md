@@ -19,7 +19,7 @@ You can directly clone the public repository:
 
 ### 1. DPP configuration
 
-Before running DPP, the method needs to be configured by creating an instance of the class Config(), for example using:
+Before running DPP, the method needs to be configured by creating an instance of the class `Config()`, for example using:
 
     import config, data, model, util
     dpp_config = config.Config()
@@ -85,11 +85,9 @@ Then, the data can be read into DPP for example from a local archive directory u
 
     dpp_data.read_from_archive(dpp_config)
 
-The local archive needs to have the following commonly used structure:
+The local archive needs to have the following commonly used structure: `archive/YY/NET/STA/CH`
 
-**archive/YY/NET/STA/CH**
-
-Here **YY** is year, **NET** is the network code, **STA** is the station code and **CH** is the channel code (e.g., HHZ.D) corresponding to the seismic streams.
+Here `YY` is year, `NET` is the network code, `STA` is the station code and `CH` is the channel code (e.g., HHZ.D) corresponding to the seismic streams.
 An example of archive data is included in `sample_data/archive`.
 
 Alternatively, waveforms can be read from a local directory with no specific structure. For example using:
