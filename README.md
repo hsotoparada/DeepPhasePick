@@ -172,7 +172,7 @@ according to the optimized hyperparameter values defining the picking window for
 For example, the following will plot the predicted picks, the vertical ('Z') and north ('N') seismogram components,
 and the probability time series for P- and S-phase classes shifted in time as described above.
 
-    util.plot_predicted_wf_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
+    util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
 
 Please check a more detailed information about all the allowed parameters in the documentation or this function.
 
