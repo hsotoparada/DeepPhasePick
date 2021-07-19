@@ -169,8 +169,10 @@ The parameter `plot_probs` defines the probability time series for which classes
 Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
 according to the optimized hyperparameter values defining the picking window for each class.
 
-For example, the following will plot the predicted picks, the vertical ('Z') and north ('N') seismogram components,
-and the probability time series for P- and S-phase classes shifted in time as described above.
+In the output figures, ...colors
+
+For example, the following will plot the predicted picks (P phase in red, S phase in blue), the vertical ('Z') and north ('N') seismogram components,
+and the probability time series for P- and S-phase classes shifted in time as described above (right y-axis, in same colors as picks).
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
 
