@@ -97,18 +97,18 @@ Alternatively, waveforms can be read from a local directory with no specific str
 
 ### 3. Phase Detection and Picking
 
-In order to run the phase detection and picking stages, an instance of the class Model() needs to be created, for example using:
+In order to run the phase detection and picking stages, an instance of the class `Model()` needs to be created, for example using:
 
     dpp_model = model.Model()
 
 This reads the optimized trained models into DPP.
 By default, the trained model weights and other relevant model information obtained from the hyperparameter optimization are read from the following directories:
 
-**models/detection/20201002**, which contains files related to the optimized phase detection model described in Soto and Schurr (2021),
+`models/detection/20201002`: which contains files related to the optimized phase detection model described in Soto and Schurr (2021),
 
-**models/picking/20201002_1/P**, which contains files related to the optimized P-phase picking model described in Soto and Schurr (2021), and
+`models/picking/20201002_1/P`: which contains files related to the optimized P-phase picking model described in Soto and Schurr (2021), and
 
-**models/picking/20201002_1/S**, which contains files related to the optimized S-phase picking model described in Soto and Schurr (2021).
+`models/picking/20201002_1/S`: which contains files related to the optimized S-phase picking model described in Soto and Schurr (2021).
 
 The strings `20201002` and  `20201002_1` indicates the version of the models, which is defined by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
 that can be passed to Model().
