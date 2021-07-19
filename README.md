@@ -143,7 +143,7 @@ The optional parameter `save_data = True` (default is `False`) will save a dicti
 The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots` if `run_mcd=True`.
 These figures are similar to the subplots in Figure 3 (Soto and Schurr, 2021).
 
-The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information on preliminary and refined phase picks to `opath/*/pick_stats`.
+The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information of preliminary and refined phase picks to `opath/*/pick_stats`.
 
 The optional parameter `save_stats = True` (default is `True`) will save statistics of predicted phase onsets to the output file `opath/*/pick_stats/pick_stats`.
 <br> If `run_mcd=False`, the ouput file will contain the following 4 columns:
@@ -152,8 +152,10 @@ The optional parameter `save_stats = True` (default is `True`) will save statist
 
 If `run_mcd=True`, the output file will contain the previous columns plus the following additional columns with the results from the MCD iterations:
 
-`tons (refined; UTC), tons (preliminary; within picking window), tons (refined; within picking window),
-tons_err (before onset), tons_err (after onset), pick class, pb, pb_std`
+`tons (refined; UTC), tons (preliminary; within picking window) [s], tons (refined; within picking window) [s],
+tons_err (before onset) [s], tons_err (after onset) [s], pick class, pb, pb_std`
+
+Here `tons` is the predicted phase time onset, and `tons_err`, `pick class`, `pb`, and `pb_std` are described in Figure 3 (Soto and Schurr, 2021).
 
 
 ### 4. Plotting predicted P and S phases
