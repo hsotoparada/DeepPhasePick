@@ -30,9 +30,9 @@ Then, parameters controlling different stages in the method can be configured as
 applied are defined using `dpp_config.set_data()`.**
 
 For example, to select the waveforms from stations `PB01` and `PB02` (network `CX`), and channel `HH` which are stored in
-the archive directory `data`, and save the results in directory `out`, run:
+the archive directory `archive`, and save the results in directory `out`, run:
 
-    dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
+    dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='archive', opath='out')
 
 **1.2 Parameters controlling how seismic waveforms are processed before the phase detection stage are defined using `dpp_config.set_data_params()`.**
 
@@ -88,7 +88,7 @@ Then, the data can be read into DPP for example from a local archive directory u
 The local archive needs to have the following commonly used structure: `archive/YY/NET/STA/CH`
 
 Here `YY` is year, `NET` is the network code, `STA` is the station code and `CH` is the channel code (e.g., HHZ.D) corresponding to the seismic streams.
-An example of archive data is included in `sample_data/archive`.
+An example of archived data is included in `sample_data/archive`.
 
 Alternatively, waveforms can be read from a local directory with no specific structure. For example using:
 
