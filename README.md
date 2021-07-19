@@ -34,7 +34,7 @@ the archive directory `data`, and save the results in directory `out`, run:
 
     dpp_config.set_data(stas=['PB01', 'PB02'], net='CX', ch='HH', archive='data', opath='out')
 
-**1.2 Parameters controlling how seismic waveforms are processed before phase detection stage are defined using `dpp_config.set_data_params()`.**
+**1.2 Parameters controlling how seismic waveforms are processed before the phase detection stage are defined using `dpp_config.set_data_params()`.**
 
 For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if data is not already sampled at that sampling rate) before running the detection:
 
@@ -71,7 +71,7 @@ Then refined pick onsets and their time uncertainties will be computed by applyi
 More details on the arguments accepted by each of these configuration functions can be seen from the corresponding function documentation.
 
 Note that, instead of configuring DPP by using the functions describe above, each set of parameters can be passed as a dictionary to `config.Config()`.
-See the class documentation to use this approach.
+See the class `Config()` documentation to use this approach.
 
 ### 2. Seismic Data
 
@@ -118,7 +118,7 @@ that can be passed to Model().
 <br> Note that a new version (`20201002_2`) of the P- and S-phase picking models is also available. These upgraded picking models were trained using 2x and 3x
 the number of shifted versions of the seismic records originally used in Soto and Schurr (2021). Hence enhancing the performance of the phase picking.
 
-See the class Model() documentation for details on other allowed optional parameters.
+See the class `Model()` documentation for details on other allowed optional parameters.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
 
