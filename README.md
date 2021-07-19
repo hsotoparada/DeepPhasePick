@@ -164,7 +164,7 @@ Figures including continuous waveforms together with predicted P and S phases ca
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
 
-Three additional optional parameters in this function allow to modify the figures content.
+Three additional optional parameters in this function allow to modify the figures content (see function documentation).
 The parameter `plot_comps` defines which seismogram components are plotted.
 The parameter `plot_probs` defines the probability time series for which classes are plotted.
 Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
@@ -174,8 +174,6 @@ For example, the following will plot the predicted picks (P phase in red, S phas
 and the probability time series for P- and S-phase classes shifted in time as described above (in same colors as corresponding picks).
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
-
-More detailed information about the allowed parameters can be seen from the documentation of this function.
 
 
 ## Citation:
