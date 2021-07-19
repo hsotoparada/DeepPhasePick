@@ -18,8 +18,8 @@ import obspy.core as oc
 util.init_session()
 dpp_config = config.Config()
 dpp_config.set_trigger(pthres_p=[0.9, 0.001], pthres_s=[0.9, 0.001])
-dpp_config.set_picking(op_conds=['1','2','3','4'], tp_th_add=1.5, dt_sp_near=1.5, dt_ps_max=25., dt_sdup_max=2., mcd_iter=10, run_mcd=True)
-# dpp_config.set_picking(op_conds=['1','2','3','4'], tp_th_add=1.5, dt_sp_near=1.5, dt_ps_max=25., dt_sdup_max=2., mcd_iter=10, run_mcd=False)
+dpp_config.set_picking(mcd_iter=10, run_mcd=True)
+# dpp_config.set_picking(run_mcd=False)
 #
 dpp_config.set_data(
     stas=['PB01', 'PB02'],
@@ -60,7 +60,8 @@ dpp_data.read_from_directory(dpp_config)
 #
 # model
 # dpp_model = model.Model(verbose=False)
-dpp_model = model.Model(verbose=False, version_pick_P="20210701", ntrials_P=17)
+# dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", ntrials_P=50)
+dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", ntrials_P=50, version_pick_S="20201002_2", ntrials_S=50)
 #
 # print(dpp_model.model_detection['best_model'].summary())
 # print(dpp_model.model_picking_P['best_model'].summary())
