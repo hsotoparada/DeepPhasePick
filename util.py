@@ -160,11 +160,10 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .5))
     ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.1))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
+    ax[-1].set_xlabel(f"Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase P: {opath_fig}/{sta}_P_{plot_num+1:02}.png")
-    # print("#")
     ofig = f"{opath_fig}/{sta}_P_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
@@ -187,6 +186,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
         ax_tmp.plot(tr_win_x, mc_pred[l,:,0], c='magenta', lw=.2, ls='--', zorder=1)
     ax_tmp.plot(tr_win_x, mc_pred_mean[:,0], c='magenta', lw=1., zorder=1)
     ax_tmp.set_ylim([0., 1.])
+    ax_tmp.set_ylabel("Probability")
     ax_tmp.yaxis.set_ticks(np.arange(0.,1.1,.1)[:])
     ax_tmp.yaxis.set_minor_locator(ticker.MultipleLocator(.05))
     ax_tmp.axhline(mc_pred_mean[mc_pred_mean_arg_pick,0], c='magenta', lw=1., ls='--', zorder=2)
@@ -214,13 +214,10 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].set_xlim([xmin, xmax])
     tick_major = np.arange(xmin, xmax + .1, .1)
     tick_minor = np.arange(xmin, xmax + .01, .02)
-    # ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .1))
     ax[-1].xaxis.set_major_locator(ticker.FixedLocator(tick_major))
-    # ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.05))
-    # ax[-1].xaxis.set_minor_locator(ticker.LinearLocator(5))
     ax[-1].xaxis.set_minor_locator(ticker.FixedLocator(tick_minor))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
+    ax[-1].set_xlabel("Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase P: {opath_fig}/{sta}_P_mc_{plot_num+1:02}.png")
@@ -228,7 +225,6 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     print(tr_label_2)
     print(tr_label_3)
     print(tr_label_4)
-    # print("#")
     ofig = f"{opath_fig}/{sta}_P_mcd_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
@@ -312,11 +308,10 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .5))
     ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.1))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
+    ax[-1].set_xlabel("Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase S: {opath_fig}/{sta}_S_E_{plot_num+1:02}.png")
-    # print("#")
     ofig = f"{opath_fig}/{sta}_S_E_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
@@ -346,11 +341,10 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .5))
     ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.1))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
+    ax[-1].set_xlabel("Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase S: {opath_fig}/{sta}_S_N_{plot_num+1:02}.png")
-    # print("#")
     ofig = f"{opath_fig}/{sta}_S_N_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
@@ -375,6 +369,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
         ax_tmp.plot(tr_win_x, mc_pred[l,:,0], c='magenta', lw=.2, ls='--')
     ax_tmp.plot(tr_win_x, mc_pred_mean[:,0], c='magenta', lw=1.)
     ax_tmp.set_ylim([0., 1.])
+    ax_tmp.set_ylabel("Probability")
     ax_tmp.yaxis.set_ticks(np.arange(0.,1.1,.1)[:])
     ax_tmp.yaxis.set_minor_locator(ticker.MultipleLocator(.05))
     ax_tmp.axhline(mc_pred_mean[mc_pred_mean_arg_pick,0], c='magenta', lw=1., ls='--')
@@ -402,13 +397,10 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].set_xlim([xmin, xmax])
     tick_major = np.arange(xmin, xmax + .1, .1)
     tick_minor = np.arange(xmin, xmax + .01, .02)
-    # ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .1))
     ax[-1].xaxis.set_major_locator(ticker.FixedLocator(tick_major))
-    # ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.05))
-    # ax[-1].xaxis.set_minor_locator(ticker.LinearLocator(5))
     ax[-1].xaxis.set_minor_locator(ticker.FixedLocator(tick_minor))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
+    ax[-1].set_xlabel("Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase S: {opath_fig}/{sta}_S_E_mc_{plot_num+1:02}.png")
@@ -428,7 +420,6 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     tr_win_y = data[0,:,1]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=2.)
-    # ax[-1].plot(tr_win_x, tr_win_y, c='k', marker='o', ms=.5)
     #
     # plot output binary probs
     ax_tmp = ax[-1].twinx()
@@ -436,6 +427,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
         ax_tmp.plot(tr_win_x, mc_pred[l,:,0], c='magenta', lw=.2, ls='--')
     ax_tmp.plot(tr_win_x, mc_pred_mean[:,0], c='magenta', lw=1.)
     ax_tmp.set_ylim([0., 1.])
+    ax_tmp.set_ylabel("Probability")
     ax_tmp.yaxis.set_ticks(np.arange(0.,1.1,.1)[:])
     ax_tmp.yaxis.set_minor_locator(ticker.MultipleLocator(.05))
     ax_tmp.axhline(mc_pred_mean[mc_pred_mean_arg_pick,0], c='magenta', lw=1., ls='--')
@@ -458,14 +450,10 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax[-1].set_xlim([xmin, xmax])
     tick_major = np.arange(xmin, xmax + .1, .1)
     tick_minor = np.arange(xmin, xmax + .01, .02)
-    # ax[-1].xaxis.set_ticks(np.arange(xmin, xmax + .1, .1))
     ax[-1].xaxis.set_major_locator(ticker.FixedLocator(tick_major))
-    # ax[-1].xaxis.set_minor_locator(ticker.MultipleLocator(.05))
-    # ax[-1].xaxis.set_minor_locator(ticker.LinearLocator(5))
     ax[-1].xaxis.set_minor_locator(ticker.FixedLocator(tick_minor))
     ax[-1].set_ylim([-1., 1.])
-    ax[-1].set_xlabel(f"time [s]")
-    #
+    ax[-1].set_xlabel("Time [s]")
     #
     plt.tight_layout()
     print(f"plotting predicted phase S: {opath_fig}/{sta}_S_N_mc_{plot_num+1:02}.png")
@@ -473,7 +461,6 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     print(tr_label_2)
     print(tr_label_3)
     print(tr_label_4)
-    # print("#")
     ofig = f"{opath_fig}/{sta}_S_N_mcd_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
@@ -504,27 +491,31 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
     """
     #
     # plot format parameters
-    mpl.rcParams['xtick.major.size'] = 14
+    mpl.rcParams['xtick.major.size'] = 10
     mpl.rcParams['xtick.major.width'] = 2
-    mpl.rcParams['xtick.minor.size'] = 6
+    mpl.rcParams['xtick.minor.size'] = 5
     mpl.rcParams['xtick.minor.width'] = 2
-    mpl.rcParams['ytick.major.size'] = 14
+    mpl.rcParams['ytick.major.size'] = 10
     mpl.rcParams['ytick.major.width'] = 2
-    mpl.rcParams['ytick.minor.size'] = 6
+    mpl.rcParams['ytick.minor.size'] = 4
     mpl.rcParams['ytick.minor.width'] = 2
-    mpl.rcParams['xtick.labelsize'] = 22
-    mpl.rcParams['ytick.labelsize'] = 22
-    mpl.rcParams['axes.titlesize'] = 22
-    mpl.rcParams['axes.labelsize'] = 22
+    mpl.rcParams['xtick.labelsize'] = 16
+    mpl.rcParams['ytick.labelsize'] = 16
+    mpl.rcParams['axes.titlesize'] = 16
+    mpl.rcParams['axes.labelsize'] = 16
     #
     best_params = model.model_detection['best_params']
+    add_rows = 0
+    if len(plot_probs) > 0:
+        add_rows += 1
     #
     print("creating plots...")
     for i in data.data:
         #
         for sta in data.data[i]['st']:
             #
-            fig = plt.figure(figsize=(20., 5.*len(plot_comps)))
+            # fig = plt.figure(figsize=(20., 5.*len(plot_comps)))
+            fig = plt.figure(figsize=(12., 4*(len(plot_comps)+add_rows)))
             plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
             #
             for n, ch in enumerate(plot_comps):
@@ -542,8 +533,9 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                 # print(tr_y.min(), tr_y.max(), y_max)
                 #
                 # plot trace
-                ax.append(fig.add_subplot(len(plot_comps), 1, n+1))
-                ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
+                ax.append(fig.add_subplot(len(plot_comps)+add_rows, 1, n+1))
+                # ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
+                ax[-1].plot(tr_x, tr_y, c='k', lw=.2)
                 #
                 # retrieve predicted P, S class probability time series
                 #
@@ -557,30 +549,11 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                     ts_shift = 0
                     tn_shift = 0
                 #
-                # plot predicted P, S, Noise class probability functions
-                #
-                if len(plot_probs) > 0:
-                    ax_tmp = ax[-1].twinx()
-                if 'P' in plot_probs:
-                    x_prob_p = model.detections[i][sta]['tt']+tp_shift
-                    y_prob_p = model.detections[i][sta]['ts'][:,0]
-                    ax_tmp.plot(x_prob_p, y_prob_p, c='red', lw=0.75)
-                if 'S' in plot_probs:
-                    x_prob_s = model.detections[i][sta]['tt']+ts_shift
-                    y_prob_s = model.detections[i][sta]['ts'][:,1]
-                    ax_tmp.plot(x_prob_s, y_prob_s, c='blue', lw=0.75)
-                if 'N' in plot_probs:
-                    x_prob_n = model.detections[i][sta]['tt']+tn_shift
-                    y_prob_n = model.detections[i][sta]['ts'][:,2]
-                    ax_tmp.plot(x_prob_n, y_prob_n, c='k', lw=0.75)
-                #
                 # plot trace label
-                tr_label = f"{tr.stats.network}.{tr.stats.station}.{tr.stats.channel}"
+                # tr_label = f"{tr.stats.network}.{tr.stats.station}.{tr.stats.channel}"
+                tr_label = f"{tr.stats.channel}"
                 box_label = dict(boxstyle='square', facecolor='white', alpha=.9)
-                if len(plot_probs) > 0:
-                    ax_tmp.text(0.02, .95, tr_label, size=14., ha='left', va='center', transform=ax_tmp.transAxes, bbox=box_label)
-                else:
-                    ax[-1].text(0.02, .95, tr_label, size=14., ha='left', va='center', transform=ax[-1].transAxes, bbox=box_label)
+                ax[-1].text(0.02, .95, tr_label, size=14., ha='left', va='center', transform=ax[-1].transAxes, bbox=box_label)
                 #
                 tstart_plot = tr.stats.starttime
                 tend_plot = tr.stats.endtime
@@ -623,15 +596,36 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                         ts_plot = tstart_win - tstart_plot + tpick_pred
                         ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='-')
                 #
-                # ax[-1].set_xlim([0, ...])
-                ax[-1].xaxis.set_ticks(np.arange(0.,tr_x.max()+1.,500.)[:])
                 ylim = [-1., 1.]
                 ax[-1].set_ylim(ylim)
+                ax[-1].set_xlim([0, tend_plot - tstart_plot])
+                if n == len(plot_comps)-1 and add_rows == 0:
+                    ax[-1].set_xlabel("Time [s]")
+            #
+            # plot predicted P, S, Noise class probability functions
+            #
+            if len(plot_probs) > 0:
+                ax.append(fig.add_subplot(len(plot_comps)+add_rows, 1, len(plot_comps)+1))
+                ax[-1].set_xlim([0, tend_plot - tstart_plot])
+                ax[-1].set_xlabel("Time [s]")
+                ax[-1].set_ylim([-.05, 1.05])
+                ax[-1].set_ylabel("Probability")
+            if 'P' in plot_probs:
+                x_prob_p = model.detections[i][sta]['tt']+tp_shift
+                y_prob_p = model.detections[i][sta]['ts'][:,0]
+                ax[-1].plot(x_prob_p, y_prob_p, c='red', lw=0.75)
+            if 'S' in plot_probs:
+                x_prob_s = model.detections[i][sta]['tt']+ts_shift
+                y_prob_s = model.detections[i][sta]['ts'][:,1]
+                ax[-1].plot(x_prob_s, y_prob_s, c='blue', lw=0.75)
+            if 'N' in plot_probs:
+                x_prob_n = model.detections[i][sta]['tt']+tn_shift
+                y_prob_n = model.detections[i][sta]['ts'][:,2]
+                ax[-1].plot(x_prob_n, y_prob_n, c='k', lw=0.75)
             #
             plt.tight_layout()
             #
             opath = model.detections[i][sta]['opath']
-            # tstr = opath.split('/')[-1]
             tstr_start = tr.stats.starttime.strftime("%Y%m%dT%H%M%S")
             tstr_end = tr.stats.endtime.strftime("%Y%m%dT%H%M%S")
             opath = f"{opath}/wf_plots"
