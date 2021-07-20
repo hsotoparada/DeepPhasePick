@@ -101,18 +101,17 @@ In order to run the phase detection and picking stages, an instance of the class
 
     dpp_model = model.Model()
 
-This reads the optimized trained models into DPP.
-A string indicating the version of the models can be given by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`
-when calling `Model()`.
+When calling `Model()`, a string indicating the version of the models can be given by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`, as well as
+the number of trials run for the corresponding model by the optional parameters `ntrials_det`, `ntrials_P`, `ntrials_S`.
 See the class `Model()` documentation for details on other allowed optional parameters.
 
 Available model versions:
 
-`20201002`: optimized phase detection model described in Soto and Schurr (2021). This is default value of `version_det`.
+`20201002` `(ntrials_det = 1000)`: best optimized phase detection model, which is described in Soto and Schurr (2021). This is default value of `version_det`.
 
-`20201002_1`: optimized P- and S-phase picking models described in Soto and Schurr (2021). This is default value of `version_pick_P` and `version_pick_S`.
+`20201002_1` `(ntrials_P = ntrials_S = 50)`: optimized P- and S-phase picking models, which are described in Soto and Schurr (2021). This is default value of `version_pick_P` and `version_pick_S`.
 
-`20201002_2`: upgraded picking models.
+`20201002_2` `(ntrials_P = ntrials_S = 50)`: upgraded picking models.
 These models were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
