@@ -177,8 +177,8 @@ and the probability time series for P- and S-phase classes shifted in time as de
 
 If you use this algorithm for research purpose, please cite it as follows:
 
-- Soto, H., and Schurr, B. (2021). DeepPhasePick: A method for detecting and picking seismic phases from local earthquakes based on highly
-optimized convolutional and recurrent deep neural networks. https://doi.org/10.1093/gji/ggab266
+- Soto, H., and Schurr, B. DeepPhasePick: A method for detecting and picking seismic phases from local earthquakes based on highly
+optimized convolutional and recurrent deep neural networks. Geophysical Journal International (2021). https://doi.org/10.1093/gji/ggab266
 
 
 ## Thanks:
