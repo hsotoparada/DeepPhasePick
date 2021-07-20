@@ -136,7 +136,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     prob_th1 = dct_mcd['mcd']['prob_th1']
     prob_th2 = dct_mcd['mcd']['prob_th2']
     #
-    # plot - phase window input for network
+    # plot - phase window input for RNN
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
@@ -169,7 +169,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
     #
-    # plot - phase window input for network (zoom around predicted time pick)
+    # plot - phase window input for RNN (zoom around predicted time pick)
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
@@ -283,7 +283,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     prob_th1 = dct_mcd['mcd']['prob_th1']
     prob_th2 = dct_mcd['mcd']['prob_th2']
     #
-    # plot - phase window input for network (comp E)
+    # plot - phase window input for RNN (comp E)
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
@@ -317,7 +317,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
     #
-    # plot - phase window input for network (comp N)
+    # plot - phase window input for RNN (comp N)
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
@@ -350,7 +350,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
     #
-    # plot - phase window input for network (zoom around predicted time pick, comp E)
+    # plot - phase window input for RNN (zoom around predicted time pick, comp E)
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
@@ -409,7 +409,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
     #
-    # plot - phase window input for network (zoom around predicted time pick, comp N)
+    # plot - phase window input for RNN (zoom around predicted time pick, comp N)
     #
     fig = plt.figure(figsize=(7*1, 3*1))
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
