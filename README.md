@@ -113,7 +113,7 @@ Available model versions:
 `20201002_1`: optimized P- and S-phase picking models described in Soto and Schurr (2021). This is default value of `version_pick_P` and `version_pick_S`.
 
 `20201002_2`: upgraded picking models.
-These models were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records originally used in version `20201002_1`.
+These models were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
@@ -122,7 +122,7 @@ Once the models are read into DPP, model information can be retrieved for exampl
     print(dpp_model.model_picking_P['best_model'].summary())
     print(dpp_model.model_picking_S['best_model'].summary())
 
-**3.1 Then, to run the phase detection on the selected seismic waveforms use:**
+**3.1 To run the phase detection on the selected seismic waveforms use:**
 
     dpp_model.run_detection(dpp_config, dpp_data)
 
@@ -179,8 +179,6 @@ If you use this algorithm for research purpose, please cite it as follows:
 
 - Soto, H., and Schurr, B. (2020). DeepPhasePick: A method for Detecting and Picking SeismicPhases from Local Earthquakes based on highly
 optimizedConvolutional and Recurrent Deep Neural Networks. EarthArXiv preprint: https://eartharxiv.org/repository/view/1752/.
-
-Please let me know of any bugs found in the code.
 
 
 ## Thanks:
