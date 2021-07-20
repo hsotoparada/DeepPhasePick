@@ -22,7 +22,7 @@ Then, DPP requirements can be installed to a dedicated conda environment:
 
 ## 2. DPP Worflow
 
-### 1. DPP configuration
+### 1. Configuration
 
 Before running DPP, the method needs to be configured by creating an instance of the class `Config()`, for example using:
 
