@@ -514,7 +514,6 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
         #
         for sta in data.data[i]['st']:
             #
-            # fig = plt.figure(figsize=(20., 5.*len(plot_comps)))
             fig = plt.figure(figsize=(12., 4*(len(plot_comps)+add_rows)))
             plt.subplots_adjust(wspace=0, hspace=0, bottom=0, left=0)
             #
@@ -534,8 +533,8 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                 #
                 # plot trace
                 ax.append(fig.add_subplot(len(plot_comps)+add_rows, 1, n+1))
-                # ax[-1].plot(tr_x, tr_y, c='gray', lw=.25)
-                ax[-1].plot(tr_x, tr_y, c='k', lw=.2)
+                ax[-1].plot(tr_x, tr_y, c='gray', lw=.2)
+                # ax[-1].plot(tr_x, tr_y, c='k', lw=.2)
                 #
                 # retrieve predicted P, S class probability time series
                 #
