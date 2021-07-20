@@ -101,13 +101,12 @@ In order to run the phase detection and picking stages, an instance of the class
 
     dpp_model = model.Model()
 
-When calling `Model()`, a string indicating the version of the models can be given by the optional parameters `version_det`, `version_pick_P`, `version_pick_S`, as well as
-the number of trials run for the corresponding model by the optional parameters `ntrials_det`, `ntrials_P`, `ntrials_S`.
-See the class `Model()` documentation for details on other allowed optional parameters.
+When calling `Model()`, particular model versions can be specified by the string parameters `version_det`, `version_pick_P`, `version_pick_S` and additionally
+specifying the number of trials attempted for the corresponding model optimization as integer parameters `ntrials_det`, `ntrials_P`, `ntrials_S`.
 
 Available model versions:
 
-`20201002` `(ntrials_det = 1000)`: best optimized phase detection model, which is described in Soto and Schurr (2021). This is default value of `version_det`.
+`version_det = "20201002"; ntrials_det = 1000`: best-performing phase detection model described in Soto and Schurr (2021). These are the default value of `version_det` and `ntrials_det`.
 
 `20201002_1` `(ntrials_P = ntrials_S = 50)`: optimized P- and S-phase picking models, which are described in Soto and Schurr (2021). This is default value of `version_pick_P` and `version_pick_S`.
 
