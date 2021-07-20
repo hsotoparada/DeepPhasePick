@@ -18,9 +18,10 @@ cd DeepPhasePick
 
 Then, DPP requirements can be installed to a dedicated conda environment:
 
-    conda env create -f dpp.yml
-    conda activate dpp
-
+~~~bash
+conda env create -f dpp.yml
+conda activate dpp
+~~~
 
 ## 2. DPP Worflow
 
