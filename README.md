@@ -115,14 +115,15 @@ specifying the number of trials attempted for the corresponding model optimizati
 Available model versions:
 
 * `version_det = "20201002"; ntrials_det = 1000`:
+<br> best-performing phase detection model described in Soto and Schurr (2021).
+These are the default values of `version_det` and `ntrials_det`.
 
-best-performing phase detection model described in Soto and Schurr (2021). These are the default values of `version_det` and `ntrials_det`.
-
-`version_pick_P = version_pick_S = "20201002_1"; ntrials_P = ntrials_S = 50`: best-performing P- and S-phase picking models described in Soto and Schurr (2021).
+* `version_pick_P = version_pick_S = "20201002_1"; ntrials_P = ntrials_S = 50`:
+<br> best-performing P- and S-phase picking models described in Soto and Schurr (2021).
 These are the default values of `version_pick_P`, `version_pick_S`, `ntrials_P` and `ntrials_S`.
 
-`version_pick_P = version_pick_S = "20201002_2"; ntrials_P = ntrials_S = 50`: best-performing picking models,
-which were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records used in version `20201002_1`.
+* `version_pick_P = version_pick_S = "20201002_2"; ntrials_P = ntrials_S = 50`:
+<br> best-performing picking models, which were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
