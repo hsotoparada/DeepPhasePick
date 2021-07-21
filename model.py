@@ -12,7 +12,7 @@ import util
 import numpy as np
 from obspy.signal.trigger import trigger_onset
 from obspy.io.mseed.core import InternalMSEEDError
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 import tqdm
 import re, sys, os, shutil, gc
 
@@ -165,7 +165,6 @@ class Model():
         best_params = best_results['params']
         best_model = load_model(f"{ipath}/model_hyperopt_t{arg_best_trial+1:03}.h5")
         best_hist = best_results['history']
-        # best_hist = util.import_pckl2dict(f"{ipath}/hist_model_hyperopt_t{arg_best_trial+1:03}.pckl")
         #
         if verbose:
             print("#")
@@ -280,7 +279,8 @@ class Model():
         st_trim_flag = False
         #
         if tstart_cond.sum() != len(tstart_arr) or tend_cond.sum() != len(tend_arr):
-            print(f"strimming stream: {tstart_cond.sum()}, {tend_cond.sum()}")
+            # print(f"strimming stream: {tstart_cond.sum()}, {tend_cond.sum()}")
+            print(f"strimming stream...")
             st_trim_flag = True
             st.trim(tstart_arr.max(), tend_arr.min())
         #
