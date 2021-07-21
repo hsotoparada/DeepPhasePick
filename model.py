@@ -1060,7 +1060,7 @@ class Model():
                         self.picks[k][sta][phase]['twd'][i]['pb_win'] = y_prob[prob_arg]
                         self.picks[k][sta][phase]['twd'][i]['tstart_win'] = tstart_win
                         self.picks[k][sta][phase]['twd'][i]['tend_win'] = tend_win
-                        tpick_win = best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
+                        tpick_win = best_params['frac_best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
                         self.picks[k][sta][phase]['twd'][i]['pick_ml_det'] = tpick_win
                         #
                         # waveform trace (input for CNN)
