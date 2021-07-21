@@ -789,9 +789,8 @@ class Model():
         cond = (mc_pred_mean > prob_th1) & (mc_pred_mean < prob_th2)
         samps_th = np.arange(mc_pred_mean.shape[0])[cond[:,0]]
         #
-        # TODO: check
-        # this is to avoid taking into account samples where the mean class probability (mc_pred_mean) satisfies cond beyond the first intersection of
-        # mc_pred_mean and prob_th1 (before the predicted time onset mc_pred_mean_tpick) or prob_th2 (after mc_pred_mean_tpick)
+        # this restricts the uncertainty calculation to the time interval between the predicted time onset (mc_pred_mean_tpick) and the first intersections
+        # (in the rare case that these are not unique) of the mean probability (mc_pred_mean) with prob_th1 (before the onset) and with prob_th2 (after the onset)
         try:
             samps_th1 = np.array([s for s, samp in enumerate(samps_th[:]) if (samp < mc_pred_mean_arg_pick) and (samps_th[s+1] - samp > 1)]).max()
         except ValueError:
@@ -1060,7 +1059,7 @@ class Model():
                         self.picks[k][sta][phase]['twd'][i]['pb_win'] = y_prob[prob_arg]
                         self.picks[k][sta][phase]['twd'][i]['tstart_win'] = tstart_win
                         self.picks[k][sta][phase]['twd'][i]['tend_win'] = tend_win
-                        tpick_win = best_params['frac_best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
+                        tpick_win = best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
                         self.picks[k][sta][phase]['twd'][i]['pick_ml_det'] = tpick_win
                         #
                         # waveform trace (input for CNN)
