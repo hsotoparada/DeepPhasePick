@@ -123,7 +123,7 @@ These are the default values for `version_det` and `ntrials_det`.
 These are the default values for `version_pick_P`, `version_pick_S`, `ntrials_P` and `ntrials_S`.
 
 * `version_pick_P = version_pick_S = "20201002_2"; ntrials_P = ntrials_S = 50`:
-<br> best-performing picking models, which were trained using 2x (for P phase) and 3x (for P phase) the number of shifted seismic records used in version `20201002_1`.
+<br> best-performing picking models, which were trained using 2x (for P phase) and 3x (for S phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
