@@ -173,7 +173,7 @@ Figures including continuous waveforms together with predicted P and S phases ca
 Three additional optional parameters in this function allow to modify the figures content (see function documentation).
 The parameter `plot_comps` defines which seismogram components are plotted.
 The parameter `plot_probs` defines which class probability time series are plotted.
-Finally, the parameter `shift_probs` controlls if the plotted probability time series are shifted in time,
+Finally, the parameter `shift_probs` controls if the plotted probability time series are shifted in time,
 according to the optimized hyperparameter values defining the picking window for each class (see Figura S1 in Soto and Schurr, 2021).
 
 For example, the following will plot the predicted picks, the vertical ('Z') and north ('N') seismogram components,
