@@ -259,7 +259,7 @@ class Model():
         """
         #
         # trim traces within common start and end times to avoid error:
-        # --> ValueError: could not broadcast input array from shape (17958,460) into shape (17963,460)
+        # --> ValueError: could not broadcast input array from shape (x, a) into shape (y, a)
         tstart_arr = np.array([tr.stats.starttime for tr in st])
         tend_arr = np.array([tr.stats.endtime for tr in st])
         tstart_cond = (tstart_arr == st[0].stats.starttime)
@@ -336,9 +336,6 @@ class Model():
         -------
         Tuple containing preliminary P- and S-phase onsets and trigger on/off times.
         """
-        #
-        #trigger_onset(charfct, thres1, thres2, max_len=9e+99, max_len_delete=False)
-        #calculates trigger on and off times from characteristic function charfct, given thresholds thres1 and thres2
         #
         #correction of time position for P, S predicted picks
         #
@@ -569,7 +566,7 @@ class Model():
                     #
                     p_cond_pre = prob_P[:tt_p_arg[p_arg]] > .5
                     p_cond_pre = p_cond_pre[::-1]
-                    # tp_th_pre = tp - (np.argmin(p_cond_pre) * config.trigger['n_shift'] * samp_dt)
+                    #
                     if len(p_cond_pre) > 0:
                         tp_th_pre = tp - (np.argmin(p_cond_pre) * config.trigger['n_shift'] * samp_dt)
                     else:
@@ -602,11 +599,8 @@ class Model():
         #
         if '3' in op_conds:
             #
-            # s_arg_nonused = [i for i, ts in enumerate(tpicks_ml_s) if i not in s_arg_used]
-            # for i in s_arg_nonused:
             for i, s_arg in enumerate(s_arg_selected):
                 #
-                # ts = tpicks_ml_s[i]
                 ts = tpicks_ml_s[s_arg]
                 #
                 # P picks detected before current S pick
@@ -616,7 +610,6 @@ class Model():
                 if len(tp_in_prior) == 0:
                     #
                     # prior pick not found --> discard
-                    # s_picks_bool[i] = False
                     s_picks_bool[s_arg] = False
                 #
                 if len(tp_in_prior) > 0:
@@ -625,7 +618,6 @@ class Model():
                     ts_in_prior = [(t, tss) for t, tss in enumerate(tpicks_ml_s) if tss > tp_prior and tss < ts and t in np.where(s_picks_bool)[0]]
                     #
                     if len(ts_in_prior) > 1:
-                        # s_picks_bool[i] = False
                         s_picks_bool[s_arg] = False
                     #
                     # if len(ts_in_prior) == 1:
@@ -884,7 +876,6 @@ class Model():
                     ofile.write(outstr + '\n')
                 else:
                     pick_pb = dct_picks[sta]['S']['twd'][k]['pb_win']
-                    # tpick_det = dct_picks[sta]['S']['twd'][k]['pick_ml']['tpick_det']
                     tpick_det = dct_picks[sta]['S']['twd'][k]['pick_ml_det']
                     tstart_win = dct_picks[sta]['S']['twd'][k]['tstart_win']
                     tpick_det_abs = tstart_win + tpick_det
