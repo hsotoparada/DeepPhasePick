@@ -16,7 +16,7 @@ git clone https://github.com/hsotoparada/DeepPhasePick
 cd DeepPhasePick
 ~~~
 
-Then, DPP requirements can be installed to a dedicated conda environment manually or by running:
+Then, DPP requirements can be manually installed to a dedicated conda environment or by running:
 
 ~~~bash
 conda env create -f dpp.yml
