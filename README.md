@@ -147,7 +147,7 @@ The optional parameter `save_data = True` (default is `False`) will save a dicti
     dpp_model.run_picking(dpp_config, dpp_data)
 
 The optional parameter `save_plots = True` (default is `True`) will save figures of individual predicted phase onsets to `opath/*/pick_plots` if `run_mcd=True`.
-These figures are similar to the subplots in Figure 3 (Soto and Schurr, 2021).
+These figures are similar to the subplots in Figure 3 of Soto and Schurr (2021).
 
 The optional parameter `save_picks = True` (default is `False`) will save a dictionary containing relevant information of preliminary and refined phase picks to `opath/*/pick_stats`.
 
@@ -162,7 +162,7 @@ If `run_mcd=True`, the output file will contain the previous columns plus the fo
 tons_err (before onset) [s], tons_err (after onset) [s], pick class, pb, pb_std`
 
 Here `tons` is the predicted phase time onset with `tons_err` uncertainty and class `pick class`.
-These fields, as well as `pb` and `pb_std`, are described in Figure 3 (Soto and Schurr, 2021).
+These fields, as well as `pb` and `pb_std`, are described in Figure 3 of Soto and Schurr (2021).
 
 
 ### 4. Plotting predicted P and S phases
