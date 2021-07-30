@@ -49,7 +49,6 @@ class Data():
             tend_iter += dt_iter
             if tend_iter > tend:
                 tend_iter = tend
-            # print(t_iters[-1], tstart_iter, tend_iter)
         #
         print(f"time windows ({len(t_iters)}) for iteration over continuous waveforms:")
         for t_iter in t_iters:
@@ -74,8 +73,6 @@ class Data():
             doy = '%03d' % (tstart_iter.julday)
             #
             if doy != doy_tmp:
-                # print(t_iter)
-                # print(tstart_iter, tend_iter)
                 sts = [oc.Stream(), oc.Stream(), oc.Stream(), oc.Stream(), oc.Stream()]
                 st = oc.Stream()
                 #
@@ -123,17 +120,18 @@ class Data():
                 del sts
                 #
                 stas_remove = set(stas_remove)
-                # print(stas_remove)
                 for s in stas_remove:
                     for tr in st.select(station=s):
                         st.remove(tr)
-                # print(len(st))
                 print(st.__str__(extended=True))
                 #
                 # process (detrend, filter, resample, ...) raw stream data
                 #
                 print("#")
                 print("processing raw stream data...")
+                #
+                # stt = st.copy()
+                # del st
                 #
                 if config.data_params['st_detrend']:
                     #
@@ -219,7 +217,6 @@ class Data():
             #
             # sort traces of same station by channel, so for each station traces will be shown in order (HHE,N,Z)
             stt.sort(['channel'])
-            # print(stt.__str__(extended=True))
             #
             self.data[i+1] = {
                 'st': {},
@@ -285,16 +282,12 @@ class Data():
             st += stt
         del sts
         #
-        # print(len(st))
         print(st.__str__(extended=True))
         #
         # process (detrend, filter, resample, ...) raw stream data
         #
         print("#")
         print("processing raw stream data...")
-        #
-        # stt = st.copy()
-        # del st
         #
         if config.data_params['st_detrend']:
             #
@@ -390,7 +383,6 @@ class Data():
             tend_iter += dt_iter
             if tend_iter > tend:
                 tend_iter = tend
-            # print(t_iters[-1], tstart_iter, tend_iter)
         #
         print(f"time windows ({len(t_iters)}) for iteration over continuous waveforms:")
         for t_iter in t_iters:
@@ -418,7 +410,6 @@ class Data():
             #
             # sort traces of same station by channel, so for each station traces will be shown in order (HHE,N,Z)
             stt.sort(['channel'])
-            # print(stt.__str__(extended=True))
             #
             self.data[i+1] = {
                 'st': {},
