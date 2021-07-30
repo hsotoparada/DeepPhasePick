@@ -46,7 +46,6 @@ for k in dpp_data.data:
 #
 # model
 dpp_model = model.Model(verbose=False)
-# dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", version_pick_S="20201002_2")
 #
 print(dpp_model.model_detection['best_model'].summary())
 print(dpp_model.model_picking_P['best_model'].summary())
@@ -61,6 +60,6 @@ dpp_model.run_picking(dpp_config, dpp_data, save_plots=False, save_stats=True, s
 # 4. Plot predicted phases
 #
 # plots
-# util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
-util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_probs=['P','S'], shift_probs=True)
+util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
+# util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_probs=['P','S'], shift_probs=True)
 

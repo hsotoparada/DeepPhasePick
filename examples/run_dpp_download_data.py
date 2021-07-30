@@ -60,8 +60,7 @@ dpp_data.read_from_directory(dpp_config)
 #
 # model
 # dpp_model = model.Model(verbose=False)
-# dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", ntrials_P=50)
-dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", ntrials_P=50, version_pick_S="20201002_2", ntrials_S=50)
+dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", version_pick_S="20201002_2")
 #
 # print(dpp_model.model_detection['best_model'].summary())
 # print(dpp_model.model_picking_P['best_model'].summary())

@@ -45,7 +45,7 @@ dpp_data.read_from_directory(dpp_config)
 #
 # model
 # dpp_model = model.Model(verbose=False)
-dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", ntrials_P=50, version_pick_S="20201002_2", ntrials_S=50)
+dpp_model = model.Model(verbose=False, version_pick_P="20201002_2", version_pick_S="20201002_2")
 #
 print(dpp_model.model_detection['best_model'].summary())
 print(dpp_model.model_picking_P['best_model'].summary())
@@ -60,6 +60,6 @@ dpp_model.run_picking(dpp_config, dpp_data, save_plots=True, save_stats=True, sa
 # 4. Plot predicted phases
 #
 # plots
-util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
+util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'])
 # util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_probs=['P','S'], shift_probs=True)
 
