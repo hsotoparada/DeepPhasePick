@@ -164,7 +164,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     #
     plt.tight_layout()
     print(f"plotting predicted phase P: {opath_fig}/{sta}_P_{plot_num+1:02}.png")
-    ofig = f"{opath_fig}/{sta}_P_{plot_num+1:02}"
+    ofig = f"{opath_fig}/{sta}_P_Z_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
@@ -225,7 +225,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     print(tr_label_2)
     print(tr_label_3)
     print(tr_label_4)
-    ofig = f"{opath_fig}/{sta}_P_mcd_{plot_num+1:02}"
+    ofig = f"{opath_fig}/{sta}_P_Z_mcd_{plot_num+1:02}"
     plt.savefig(f"{ofig}.png", bbox_inches='tight', dpi=90)
     # plt.savefig(f"{ofig}.eps", format='eps', bbox_inches='tight', dpi=150)
     plt.close()
@@ -577,7 +577,10 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                             # tpick_pred = model.picks[i][sta]['P']['twd'][k]['pick_ml']['tpick_det']
                             tpick_pred = model.picks[i][sta]['P']['twd'][k]['pick_ml_det']
                         tp_plot = tstart_win - tstart_plot + tpick_pred
-                        ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='-')
+                        if ii == 0:
+                            ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='-', label='P pick')
+                        else:
+                            ax[-1].axvline(tp_plot, c='r', lw=1.5, ls='-')
                     #
                     for jj, l in enumerate(model.picks[i][sta]['S']['true_arg']):
                         #
@@ -593,13 +596,18 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                             # tpick_pred = model.picks[i][sta]['S']['twd'][l]['pick_ml']['tpick_det']
                             tpick_pred = model.picks[i][sta]['S']['twd'][l]['pick_ml_det']
                         ts_plot = tstart_win - tstart_plot + tpick_pred
-                        ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='-')
+                        if jj == 0:
+                            ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='-', label='S pick')
+                        else:
+                            ax[-1].axvline(ts_plot, c='b', lw=1.5, ls='-')
                 #
                 ylim = [-1., 1.]
                 ax[-1].set_ylim(ylim)
                 ax[-1].set_xlim([0, tend_plot - tstart_plot])
-                if n == len(plot_comps)-1 and add_rows == 0:
-                    ax[-1].set_xlabel("Time [s]")
+                if n == len(plot_comps)-1:
+                    plt.legend(loc='lower left', fontsize=14.)
+                    if add_rows == 0:
+                        ax[-1].set_xlabel("Time [s]")
             #
             # plot predicted P, S, Noise class probability functions
             #
@@ -612,15 +620,17 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
             if 'P' in plot_probs:
                 x_prob_p = model.detections[i][sta]['tt']+tp_shift
                 y_prob_p = model.detections[i][sta]['ts'][:,0]
-                ax[-1].plot(x_prob_p, y_prob_p, c='red', lw=0.75)
+                ax[-1].plot(x_prob_p, y_prob_p, c='red', lw=0.75, label='P')
             if 'S' in plot_probs:
                 x_prob_s = model.detections[i][sta]['tt']+ts_shift
                 y_prob_s = model.detections[i][sta]['ts'][:,1]
-                ax[-1].plot(x_prob_s, y_prob_s, c='blue', lw=0.75)
+                ax[-1].plot(x_prob_s, y_prob_s, c='blue', lw=0.75, label='S')
             if 'N' in plot_probs:
                 x_prob_n = model.detections[i][sta]['tt']+tn_shift
                 y_prob_n = model.detections[i][sta]['ts'][:,2]
-                ax[-1].plot(x_prob_n, y_prob_n, c='k', lw=0.75)
+                ax[-1].plot(x_prob_n, y_prob_n, c='k', lw=0.75, label='N')
+            if len(plot_probs) > 0:
+                plt.legend(loc='lower left', fontsize=14.)
             #
             plt.tight_layout()
             #
