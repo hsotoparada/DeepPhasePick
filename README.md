@@ -109,20 +109,19 @@ In order to run the phase detection and picking stages, an instance of the class
 
     dpp_model = model.Model()
 
-When calling `Model()`, particular model versions can be specified by the string parameters `version_det`, `version_pick_P`, `version_pick_S` and additionally
-specifying the number of trials attempted for the corresponding model optimization in the integer parameters `ntrials_det`, `ntrials_P`, `ntrials_S`.
+When calling `Model()`, particular model versions can be specified by the string parameters `version_det`, `version_pick_P`, `version_pick_S`.
 
 Available model versions:
 
-* `version_det = "20201002"; ntrials_det = 1000`:
+* `version_det = "20201002"`:
 <br> best-performing phase detection model described in Soto and Schurr (2021).
-These are the default values for `version_det` and `ntrials_det`.
+This is the default value for `version_det`.
 
-* `version_pick_P = version_pick_S = "20201002_1"; ntrials_P = ntrials_S = 50`:
+* `version_pick_P = version_pick_S = "20201002_1"`:
 <br> best-performing P- and S-phase picking models described in Soto and Schurr (2021).
-These are the default values for `version_pick_P`, `version_pick_S`, `ntrials_P` and `ntrials_S`.
+This is the default value for `version_pick_P` and `version_pick_S`.
 
-* `version_pick_P = version_pick_S = "20201002_2"; ntrials_P = ntrials_S = 50`:
+* `version_pick_P = version_pick_S = "20201002_2"`:
 <br> best-performing picking models, which were trained using 2x (for P phase) and 3x (for S phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
