@@ -44,13 +44,13 @@ the archive directory `archive`, and save the results in directory `out`, run:
 
 **1.2 Parameters controlling how seismic waveforms are processed before the phase detection stage are defined using `dpp_config.set_data_params()`.**
 
-For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if data is not already sampled at that sampling rate) before running the detection:
+For example, the following will apply a highpass filter (> .5 Hz) and resample the data to 100 Hz (if it is not already sampled at that sampling rate):
 
     dpp_config.set_data_params(samp_freq=100., st_filter='highpass', filter_opts={'freq': .5})
 
 Note that, since the models in DPP were trained using non-filtered data, this may cause numerous false positive predictions.
 
-**1.3 DPP will be applied on the selected seismic data (see function `set_data()`) in the time windows defined using `dpp_config.set_time()`.**
+**1.3 DPP will be applied on the selected seismic data (defined through `set_data()`) in the time windows defined using `dpp_config.set_time()`.**
 
 For example, to create 30-min (1800-seconds) time windows in the period between
 `2015-04-03T00:00:00` and `2015-04-03T02:00:00` (2 hours), use:
@@ -114,15 +114,15 @@ When calling `Model()`, particular model versions can be specified by the string
 Available model versions (more might be added in the future):
 
 * `version_det = "20201002"`:
-<br> best-performing phase detection model described in Soto and Schurr (2021).
+<br> best optimized phase detection model described in Soto and Schurr (2021).
 This is the default value for `version_det`.
 
 * `version_pick_P = version_pick_S = "20201002_1"`:
-<br> best-performing P- and S-phase picking models described in Soto and Schurr (2021).
+<br> best optimized P- and S-phase picking models described in Soto and Schurr (2021).
 This is the default value for `version_pick_P` and `version_pick_S`.
 
 * `version_pick_P = version_pick_S = "20201002_2"`:
-<br> best-performing picking models, which were trained using 2x (for P phase) and 3x (for S phase) the number of shifted seismic records used in version `20201002_1`.
+<br> best optimized picking models, which were trained using 2x (for P phase) and 3x (for S phase) the number of shifted seismic records used in version `20201002_1`.
 Hence enhancing the performance of the phase picking.
 
 Once the models are read into DPP, model information can be retrieved for example by using:
@@ -161,22 +161,23 @@ If `run_mcd=True`, the output file will contain the previous columns plus the fo
 `tons (refined; UTC), tons (preliminary; within picking window) [s], tons (refined; within picking window) [s],
 tons_err (before onset) [s], tons_err (after onset) [s], pick class, pb, pb_std`
 
-Here `tons` is the predicted phase time onset, and `tons_err`, `pick class`, `pb`, and `pb_std` are described in Figure 3 (Soto and Schurr, 2021).
+Here `tons` is the predicted phase time onset with `tons_err` uncertainty and class `pick class`.
+These fields, as well as `pb` and `pb_std`, are described in Figure 3 (Soto and Schurr, 2021).
 
 
 ### 4. Plotting predicted P and S phases
 
-Figures including continuous waveforms together with predicted P and S phases can be creating using:
+Figures including continuous waveforms together with predicted P and S phases can be created using:
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model)
 
-Three additional optional parameters in this function allow to modify the figures content (see function documentation).
+Three additional optional parameters in this function allow to modify the figures layout (see function documentation).
 The parameter `plot_comps` defines which seismogram components are plotted.
 The parameter `plot_probs` defines which class probability time series are plotted.
 Finally, the parameter `shift_probs` controls if the plotted probability time series are shifted in time,
 according to the optimized hyperparameter values defining the picking window for each class (see Figura S1 in Soto and Schurr, 2021).
 
-For example, the following will plot the predicted picks, the vertical ('Z') and north ('N') seismogram components,
+For example, the following will plot the predicted picks on the vertical ('Z') and north ('N') seismogram components,
 and the probability time series for P- and S-phase classes shifted in time as described above.
 
     util.plot_predicted_phases(dpp_config, dpp_data, dpp_model, plot_comps=['Z','N'], plot_probs=['P','S'], shift_probs=True)
