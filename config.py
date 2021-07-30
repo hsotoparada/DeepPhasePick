@@ -279,7 +279,7 @@ class Config():
         }
 
 
-    def set_picking(self, op_conds=['1','2','3','4'], tp_th_add=1.5, dt_sp_near=3., dt_ps_max=25., dt_sdup_max=3., run_mcd=True, mcd_iter=10):
+    def set_picking(self, op_conds=['1','2','3','4'], tp_th_add=1.5, dt_sp_near=2., dt_ps_max=35., dt_sdup_max=2., run_mcd=True, mcd_iter=10):
         """
         Set parameters applied in optional conditions for refining preliminary picks obtained from phase detection.
 
