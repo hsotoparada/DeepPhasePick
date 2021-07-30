@@ -161,7 +161,7 @@ If `run_mcd=True`, the output file will contain the previous columns plus the fo
 `tons (refined; UTC), tons (preliminary; within picking window) [s], tons (refined; within picking window) [s],
 tons_err (before onset) [s], tons_err (after onset) [s], pick class, pb, pb_std`
 
-Here `tons` is the predicted phase time onset with `tons_err` uncertainty and class `pick class`.
+Here `tons` is the predicted phase time onset with uncertainty `tons_err` and class `pick class`.
 These fields, as well as `pb` and `pb_std`, are described in Figure 3 of Soto and Schurr (2021).
 
 
