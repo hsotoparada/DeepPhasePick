@@ -116,7 +116,6 @@ class Model():
             print("#")
             print(f"best acc for phase detection:")
             print(np.array(best_hist['val_acc']).max())
-            # print(np.array(best_hist['acc']).max())
         #
         dct = {
             'best_model': best_model,
@@ -168,8 +167,7 @@ class Model():
                 print(k, best_params[k])
             print("#")
             print(f"best acc for {mode} phase picking:")
-            # print(np.array(best_hist['val_acc']).max())
-            print(np.array(best_hist['acc']).max())
+            print(np.array(best_hist['val_acc']).max())
         #
         dct = {
             'best_model': best_model,
@@ -213,7 +211,6 @@ class Model():
             [3, 4, 5]])
         """
 
-        # print('sliding window', data.shape, data.ndim)
         if axis >= data.ndim:
             raise ValueError(
                 "Axis value out of range"
@@ -242,7 +239,6 @@ class Model():
             data, shape=shape, strides=strides
         )
         #
-        # print('sliding window - strided', strided.shape, strided.ndim)
         return strided.copy()
 
 
@@ -271,22 +267,18 @@ class Model():
         st_trim_flag = False
         #
         if tstart_cond.sum() != len(tstart_arr) or tend_cond.sum() != len(tend_arr):
-            # print(f"strimming stream: {tstart_cond.sum()}, {tend_cond.sum()}")
             print(f"strimming stream...")
             st_trim_flag = True
             st.trim(tstart_arr.max(), tend_arr.min())
         #
         # Preparing data matrix for sliding window
-        # print("Preparing data matrix for sliding window")
         #
         st_data = [st[0].data, st[1].data, st[2].data]
         #
         best_params = self.model_detection['best_params']
         best_model = self.model_detection['best_model']
         dt = st[0].stats.delta
-        # print(st_data[0].size, config.trigger['n_shift'], best_params['win_size'], dt)
         tt = (np.arange(0, st_data[0].size, config.trigger['n_shift']) + .5 * best_params['win_size']) * dt #[sec]
-        # print(tt.shape, tt.ndim)
         #
         try:
             sliding_E = self._sliding_window(st_data[0], best_params['win_size'], stepsize=config.trigger['n_shift'])
@@ -304,7 +296,6 @@ class Model():
             #tr_win = tr_win / np.max(np.abs(tr_win), axis=(1,2))[:,None,None]
             #
             tt = tt[:tr_win.shape[0]]
-            # print(tt.shape, tt.ndim)
             #
             # make model predictions
             ts = best_model.predict(tr_win, verbose=True, batch_size=self.model_detection['batch_size_pred'])
@@ -365,8 +356,6 @@ class Model():
                 continue
             pick = np.argmax(ts[trig[0]:trig[1], 0])+trig[0]
             stamp_pick = st[0].stats.starttime + tt[pick] + tp_shift
-            # print(pick, tt[pick])
-            # print(f"P {pick} {ts[pick][0]} {stamp_pick} {tp_shift:.2f}")
             p_picks.append((stamp_pick, pick))
         #
         #calculate trigger on and off times of S phases, from predicted S-class probability
@@ -378,7 +367,6 @@ class Model():
                 continue
             pick = np.argmax(ts[trig[0]:trig[1], 1])+trig[0]
             stamp_pick = st[0].stats.starttime + tt[pick] + ts_shift
-            # print(f"S {pick} {ts[pick][1]} {stamp_pick} {ts_shift:.2f}")
             s_picks.append((stamp_pick, pick))
         #
         return (p_picks, s_picks, p_trigs, s_trigs)
@@ -416,13 +404,10 @@ class Model():
                 dt = st_tmp[0].stats.delta
                 print("#")
                 print(f"Calculating predictions for stream: {net}.{s}..{ch[:-1]}?...")
-                # print(st_tmp)
                 #
                 # get predicted discrete phase class probability time series
                 #
                 tr_win, tt, ts, prob_S, prob_P, prob_N, st_trim_flag, st_trimmed = self._make_prediction(config, st_tmp)
-                # print(tt.shape, ts.shape, prob_S.shape, prob_P.shape, prob_N.shape)
-                # print(tt.ndim, ts.ndim, prob_S.ndim, prob_P.ndim, prob_N.ndim)
                 print(st_trimmed)
                 #
                 # skip streams raising ValueError in make_prediction()
@@ -497,7 +482,6 @@ class Model():
         s_picks = [pick[0] for pick in dct_dets['s_picks']]
         p_trigs = np.array([trig for trig in dct_dets['p_trigs'] if trig[1] != trig[0]])
         s_trigs = np.array([trig for trig in dct_dets['s_trigs'] if trig[1] != trig[0]])
-        # print(f"triggered picks (P, S): {len(p_picks)}, {len(p_trigs)}, {len(s_picks)}, {len(s_trigs)}")
         print(f"triggered picks (P, S): {len(p_picks)}, {len(s_picks)}")
         tt_p_arg = [pick[1] for pick in dct_dets['p_picks']]
         tt_s_arg = [pick[1] for pick in dct_dets['s_picks']]
@@ -508,8 +492,6 @@ class Model():
         #
         tpicks_ml_p = np.array([t.timestamp for t in p_picks])
         tpicks_ml_s = np.array([t.timestamp for t in s_picks])
-        # print(tpicks_ml_p)
-        # print(tpicks_ml_s)
         #
         p_picks_bool = np.full(len(tpicks_ml_p), True)
         s_picks_bool = np.full(len(tpicks_ml_s), True)
@@ -523,7 +505,6 @@ class Model():
         if '1' in op_conds:
             #
             for i, tp in enumerate(tpicks_ml_p[:]):
-                # print('1', i, tp)
                 #
                 # search S picks detected nearby P phases
                 #
@@ -568,7 +549,6 @@ class Model():
             #
             dct_sp_near = {}
             for i, s_arg in enumerate(s_arg_selected):
-                # print('2', i, s_arg)
                 #
                 dct_sp_near[s_arg] = []
                 ts = tpicks_ml_s[s_arg]
@@ -625,7 +605,6 @@ class Model():
             # s_arg_nonused = [i for i, ts in enumerate(tpicks_ml_s) if i not in s_arg_used]
             # for i in s_arg_nonused:
             for i, s_arg in enumerate(s_arg_selected):
-                # print('3', i)
                 #
                 # ts = tpicks_ml_s[i]
                 ts = tpicks_ml_s[s_arg]
@@ -665,7 +644,6 @@ class Model():
             s_arg_used_dup = []
             dct_s_dup = {}
             for i, s_arg in enumerate(s_arg_selected):
-                # print('4', i, s_arg)
                 #
                 dct_s_dup[s_arg] = [s_arg]
                 ts = tpicks_ml_s[s_arg]
@@ -700,13 +678,6 @@ class Model():
         # print selected picks
         #
         print(f"selected picks (P, S): {len(np.where(p_picks_bool)[0])}, {len(np.where(s_picks_bool)[0])}")
-        # print("#")
-        # for i, tp in enumerate(tpicks_ml_p):
-        #     print(i+1, tp, p_picks_bool[i])
-        #
-        # print("#")
-        # for i, ts in enumerate(tpicks_ml_s):
-        #     print(i+1, ts, s_picks_bool[i])
         #
         # fill dictionary with selected picks
         #
@@ -755,7 +726,6 @@ class Model():
         #
         # apply Monte Carlo Dropout to get predicted time onset with uncertainty
         #
-        # print('get_predicted_picks', data.shape, data.ndim)
         mc_iter = config.picking['mcd_iter']
         mc_pred = []
         for j in tqdm.tqdm(range(mc_iter)):
@@ -795,7 +765,6 @@ class Model():
         mc_pred_mean_tpick_th2 = samps_th[-1] / config.data_params['samp_freq']
         # mc_pred_mean_tres = tpick_det - mc_pred_mean_tpick
         #
-        # print(tpick_det, mc_pred_mean_tpick, mc_pred_mean_tres, mc_pred_mean_tpick_th1, mc_pred_mean_tpick_th2)
         print(tpick_det, mc_pred_mean_tpick, mc_pred_mean_tpick_th1, mc_pred_mean_tpick_th2, opath, sta)
         #
         # pick class
@@ -962,7 +931,6 @@ class Model():
                     continue
                 stas_tp.append(sta)
             #
-            # print(stas_tp)
             for sta in stas_tp:
                 #
                 # predicted and detected picks
@@ -1015,10 +983,7 @@ class Model():
                             data_P = data_P[:1]
                             print("#")
                             print(f"P pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
-                            # print(f"data_P: {data_P.shape}")
                             data_P = data_P.reshape(1, data_P.shape[1], 1)
-                            # print(f"data_P: {data_P.shape}")
-                            # print(data_P.mean(), data_P.min(), data_P.max())
                             dct_mcd = self._get_predicted_picks(config, self.model_picking_P, data_P, sta, tpick_win, opath)
                             self.picks[k][sta][phase]['twd'][i]['pick_ml'] = dct_mcd['pick']
                             self.picks[k][sta][phase]['twd'][i]['mc_ml'] = dct_mcd['mcd']
@@ -1068,10 +1033,7 @@ class Model():
                         data_S = data_S[-2:]
                         print("#")
                         print(f"S pick: {ii+1}/{len(self.picks[k][sta][phase]['true_arg'])}")
-                        # print(f"data_S: {data_S.shape}")
                         data_S = data_S.T.reshape(1, data_S.shape[1], 2)
-                        # print(f"data_S: {data_S.shape}")
-                        # print(data_S.mean(), data_S.min(), data_S.max())
                         dct_mcd = self._get_predicted_picks(config, self.model_picking_S, data_S, sta, tpick_win, opath)
                         self.picks[k][sta][phase]['twd'][i]['pick_ml'] = dct_mcd['pick']
                         self.picks[k][sta][phase]['twd'][i]['mc_ml'] = dct_mcd['mcd']
