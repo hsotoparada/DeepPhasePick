@@ -1000,7 +1000,7 @@ class Model():
                         tpick_win = best_params['frac_dsamp_p1'] * best_params['win_size'] * samp_dt
                         self.picks[k][sta][phase]['twd'][i]['pick_ml_det'] = tpick_win
                         #
-                        # waveform trace (input for CNN)
+                        # waveform trace (input for RNN)
                         #
                         self.picks[k][sta][phase]['twd'][i][ch] = tr_tmp.slice(tstart_win, tend_win)
                         #
@@ -1052,7 +1052,7 @@ class Model():
                         tpick_win = best_params['frac_dsamp_s1'] * best_params['win_size'] * samp_dt
                         self.picks[k][sta][phase]['twd'][i]['pick_ml_det'] = tpick_win
                         #
-                        # waveform trace (input for CNN)
+                        # waveform trace (input for RNN)
                         #
                         self.picks[k][sta][phase]['twd'][i][ch] = tr_tmp.slice(tstart_win, tend_win)
                     #
