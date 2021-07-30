@@ -130,9 +130,6 @@ class Data():
                 print("#")
                 print("processing raw stream data...")
                 #
-                # stt = st.copy()
-                # del st
-                #
                 if config.data_params['st_detrend']:
                     #
                     print('detrend...')
