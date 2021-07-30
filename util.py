@@ -144,7 +144,6 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     ax.append(fig.add_subplot(1, 1, 1))
     #
     # plot trace
-    # print('plot_predicted_phase_P', data.shape, data.ndim)
     tr_win_y = data[0,:,0]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
     #
@@ -178,7 +177,6 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     #
     # plot trace
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=2., zorder=1)
-    # ax[-1].plot(tr_win_x, tr_win_y, c='k', marker='o', ms=.5)
     #
     # plot output binary probs
     ax_tmp = ax[-1].twinx()
@@ -291,10 +289,8 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax.append(fig.add_subplot(1, 1, 1))
     #
     # plot trace
-    # print('plot_predicted_phase_S', data.shape, data.ndim)
     tr_win_y = data[0,:,0]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
-    print(tr_win_x.shape, tr_win_y.shape)
     #
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=1.)
     ax[-1].vlines(x=tpick_pred, ymin=-1.1, ymax=1., color='b', lw=1.5, ls='-', clip_on=False)
@@ -327,7 +323,6 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     # plot trace
     tr_win_y = data[0,:,1]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
-    # print(tr_win_x.shape, tr_win_y.shape)
     #
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=1.)
     ax[-1].vlines(x=tpick_pred, ymin=-1.1, ymax=1., color='b', lw=1.5, ls='-', clip_on=False)
@@ -528,7 +523,6 @@ def plot_predicted_phases(config, data, model, plot_comps=['Z','E'], plot_probs=
                 y_max = np.abs(tr.data).max()
                 tr_y /= y_max
                 tr_x = np.arange(tr.data.size) * dt
-                # print(tr_y.min(), tr_y.max(), y_max)
                 #
                 # plot trace
                 ax.append(fig.add_subplot(len(plot_comps)+add_rows, 1, n+1))
