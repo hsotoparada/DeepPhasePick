@@ -29,12 +29,6 @@ class Model():
         version of optimized pre-trained model for P-phase picking.
     version_pick_S: str, optional
         version of optimized pre-trained model for S-phase picking.
-    ntrials_det: int, optional
-        number of trials that were run for the hyperparameter optimization of the model for phase detection.
-    ntrials_P: int, optional
-        number of trials that were run for the hyperparameter optimization of the model for P-phase picking.
-    ntrials_S: int, optional
-        number of trials that were run for the hyperparameter optimization of the model for S-phase picking.
     batch_size_det: int, optional
         batch size used for phase detection stage at prediction time. By default is set to the batch size optimized for the trained model.
     batch_size_pick_P: int, optional
@@ -50,9 +44,6 @@ class Model():
         version_det="20201002",
         version_pick_P="20201002_1",
         version_pick_S="20201002_1",
-        ntrials_det=1000,
-        ntrials_P=50,
-        ntrials_S=50,
         batch_size_det=None,
         batch_size_pick_P=None,
         batch_size_pick_S=None,
@@ -62,10 +53,14 @@ class Model():
         self.version_det = version_det
         self.version_pick_P = version_pick_P
         self.version_pick_S = version_pick_S
-        self.ntrials_det = ntrials_det
-        self.ntrials_P = ntrials_P
-        self.ntrials_S = ntrials_S
         self.verbose = verbose
+
+        if self.version_det == "20201002":
+            self.ntrials_det = 1000
+        if self.version_pick_P in ["20201002_1", "20201002_2"]:
+            self.ntrials_P = 50
+        if self.version_pick_S in ["20201002_1", "20201002_2"]:
+            self.ntrials_S = 50
 
         self.model_detection = self._get_model_detection(verbose=self.verbose)
         self.model_picking_P = self._get_model_picking(mode='P', verbose=self.verbose)
@@ -103,7 +98,6 @@ class Model():
         """
         #
         ipath = f"models/detection/{self.version_det}"
-        space = util.import_pckl2dict(f"{ipath}/space_detection.pckl")
         trials = util.import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{self.ntrials_det:03}.pckl")
         arg_best_trial = util.get_arg_best_trial(trials)
         best_results = util.import_pckl2dict(f"{ipath}/dict_hyperopt_t{arg_best_trial+1:03}.pckl")
@@ -153,11 +147,9 @@ class Model():
         if mode == 'P':
             ipath = f"models/picking/{self.version_pick_P}/P"
             ntrials = self.ntrials_P
-            space = util.import_pckl2dict(f"{ipath}/space_picking_P.pckl")
         else:
             ipath = f"models/picking/{self.version_pick_S}/S"
             ntrials = self.ntrials_S
-            space = util.import_pckl2dict(f"{ipath}/space_picking_S.pckl")
         #
         trials = util.import_pckl2dict(f"{ipath}/trials_hyperopt_ntrials_{ntrials:03}.pckl")
         arg_best_trial = util.get_arg_best_trial(trials)
@@ -496,7 +488,6 @@ class Model():
         # user-defined parameters
         #
         op_conds = config.picking['op_conds']
-        # print(op_conds)
         tp_th_add = config.picking['tp_th_add'] # seconds
         dt_sp_near = config.picking['dt_sp_near'] # seconds
         dt_ps_max = config.picking['dt_ps_max'] # seconds
@@ -533,7 +524,6 @@ class Model():
             #
             for i, tp in enumerate(tpicks_ml_p[:]):
                 # print('1', i, tp)
-                # sys.exit()
                 #
                 # search S picks detected nearby P phases
                 #
@@ -1089,7 +1079,6 @@ class Model():
                             util.plot_predicted_phase_S(config, dct_mcd, data_S, sta, opath, ii)
             #
             if save_stats:
-                # s.makedirs(f"{opath}/pick_stats", exist_ok=True)
                 self._save_pick_stats(config, self.picks[k], self.detections[k], data.data[k])
             #
             if save_picks:

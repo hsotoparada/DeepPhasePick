@@ -58,10 +58,8 @@ class Data():
         #
         # iterate over time windows
         #
-        # dct_data = {}
         self.data = {}
         stas = config.data['stas']
-        # stas = dct_sta[flag_data]['stas']
         doy_tmp = '999'
         for i, t_iter in enumerate(t_iters):
             #
@@ -112,7 +110,6 @@ class Data():
                         try:
                             print(f)
                             tr = oc.read(f)
-                            # print(tr)
                             sts[st_arg] += tr
                         #
                         except InternalMSEEDError:
@@ -137,9 +134,6 @@ class Data():
                 #
                 print("#")
                 print("processing raw stream data...")
-                #
-                # stt = st.copy()
-                # del st
                 #
                 if config.data_params['st_detrend']:
                     #
