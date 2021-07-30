@@ -111,7 +111,7 @@ In order to run the phase detection and picking stages, an instance of the class
 
 When calling `Model()`, particular model versions can be specified by the string parameters `version_det`, `version_pick_P`, `version_pick_S`.
 
-Available model versions:
+Available model versions (more might be added in the future):
 
 * `version_det = "20201002"`:
 <br> best-performing phase detection model described in Soto and Schurr (2021).
