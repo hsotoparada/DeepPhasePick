@@ -1,0 +1,13 @@
+name: dpp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - obspy==1.2.2
+  - numpy
+  - matplotlib
+  - tqdm
+  - pip
+  - pip:
+    - tensorflow==2.2.0
