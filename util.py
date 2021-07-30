@@ -143,7 +143,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     ax = []
     ax.append(fig.add_subplot(1, 1, 1))
     #
-    # plot trace + label
+    # plot trace
     # print('plot_predicted_phase_P', data.shape, data.ndim)
     tr_win_y = data[0,:,0]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
@@ -176,7 +176,7 @@ def plot_predicted_phase_P(config, dct_mcd, data, sta, opath, plot_num):
     ax = []
     ax.append(fig.add_subplot(1, 1, 1))
     #
-    # plot trace + label
+    # plot trace
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=2., zorder=1)
     # ax[-1].plot(tr_win_x, tr_win_y, c='k', marker='o', ms=.5)
     #
@@ -290,7 +290,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax = []
     ax.append(fig.add_subplot(1, 1, 1))
     #
-    # plot trace + label
+    # plot trace
     # print('plot_predicted_phase_S', data.shape, data.ndim)
     tr_win_y = data[0,:,0]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
@@ -324,7 +324,7 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     ax = []
     ax.append(fig.add_subplot(1, 1, 1))
     #
-    # plot trace + label
+    # plot trace
     tr_win_y = data[0,:,1]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
     # print(tr_win_x.shape, tr_win_y.shape)
@@ -361,7 +361,6 @@ def plot_predicted_phase_S(config, dct_mcd, data, sta, opath, plot_num):
     tr_win_y = data[0,:,0]
     tr_win_x = np.arange(tr_win_y.shape[0]) / config.data_params['samp_freq']
     ax[-1].plot(tr_win_x, tr_win_y, c='gray', lw=2.)
-    # ax[-1].plot(tr_win_x, tr_win_y, c='k', marker='o', ms=.5)
     #
     # plot output binary probs
     ax_tmp = ax[-1].twinx()
